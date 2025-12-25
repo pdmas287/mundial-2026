@@ -178,7 +178,7 @@ export default function PerfilPage() {
     return `#${posicion}`
   }
 
-  if (loading) {
+  if (loading || !data) {
     return (
       <div className="space-y-6">
         <div>
@@ -213,12 +213,12 @@ export default function PerfilPage() {
         <div className="flex items-start gap-6">
           <div
             className={`w-24 h-24 rounded-full flex items-center justify-center text-5xl ${
-              data?.usuario.role === 'ADMIN'
+              data.usuario.role === 'ADMIN'
                 ? 'bg-gradient-to-r from-purple-400 to-pink-500'
                 : 'bg-gradient-to-r from-blue-400 to-purple-500'
             }`}
           >
-            {data?.usuario.avatar || '⭐'}
+            {data.usuario.avatar || '⭐'}
           </div>
           <div className="flex-1">
             {editando ? (
@@ -293,31 +293,31 @@ export default function PerfilPage() {
             ) : (
               <>
                 <h2 className="text-3xl font-black text-white mb-2">
-                  {data?.usuario.nombre}
-                  {data?.usuario.role === 'ADMIN' && (
+                  {data.usuario.nombre}
+                  {data.usuario.role === 'ADMIN' && (
                     <span className="ml-3 text-sm bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full">
                       👑 Admin
                     </span>
                   )}
                 </h2>
-                <p className="text-white/60 mb-4">{data?.usuario.email}</p>
+                <p className="text-white/60 mb-4">{data.usuario.email}</p>
                 <div className="flex items-center gap-6">
                   <div>
                     <p className="text-xs text-white/40 mb-1">Posición</p>
                     <p className="text-2xl font-black gradient-text">
-                      {getMedalEmoji(data?.estadisticas.posicionRanking || 0)}
+                      {getMedalEmoji(data.estadisticas.posicionRanking || 0)}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-white/40 mb-1">Puntos Totales</p>
                     <p className="text-2xl font-black text-yellow-400">
-                      {data?.usuario.puntosTotal || 0}
+                      {data.usuario.puntosTotal || 0}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-white/40 mb-1">Miembro desde</p>
                     <p className="text-sm text-white">
-                      {data?.usuario.createdAt
+                      {data.usuario.createdAt
                         ? new Date(data.usuario.createdAt).toLocaleDateString('es-ES', {
                             month: 'long',
                             year: 'numeric',
@@ -337,25 +337,25 @@ export default function PerfilPage() {
         <Card className="text-center">
           <p className="text-sm text-white/60 mb-2">Total Predicciones</p>
           <p className="text-4xl font-black gradient-text">
-            {data?.estadisticas.totalPredicciones || 0}
+            {data.estadisticas.totalPredicciones || 0}
           </p>
         </Card>
         <Card className="text-center">
           <p className="text-sm text-white/60 mb-2">Predicciones Exactas</p>
           <p className="text-4xl font-black text-green-400">
-            {data?.estadisticas.prediccionesExactas || 0}
+            {data.estadisticas.prediccionesExactas || 0}
           </p>
         </Card>
         <Card className="text-center">
           <p className="text-sm text-white/60 mb-2">Predicciones Parciales</p>
           <p className="text-4xl font-black text-blue-400">
-            {data?.estadisticas.prediccionesParciales || 0}
+            {data.estadisticas.prediccionesParciales || 0}
           </p>
         </Card>
         <Card className="text-center">
           <p className="text-sm text-white/60 mb-2">Tasa de Acierto</p>
           <p className="text-4xl font-black text-yellow-400">
-            {data?.estadisticas.tasaAcierto || 0}%
+            {data.estadisticas.tasaAcierto || 0}%
           </p>
         </Card>
       </div>
@@ -366,7 +366,7 @@ export default function PerfilPage() {
           📊 Estadísticas por Fase
         </h3>
         <div className="space-y-3">
-          {data?.estadisticasPorFase
+          {data.estadisticasPorFase
             .filter((f) => f.predicciones > 0)
             .map((fase) => (
               <div
@@ -396,7 +396,7 @@ export default function PerfilPage() {
       </Card>
 
       {/* Predicciones de Premios */}
-      {data?.prediccionesPremios && data.prediccionesPremios.length > 0 && (
+      {data.prediccionesPremios && data.prediccionesPremios.length > 0 && (
         <Card>
           <h3 className="text-2xl font-bold text-white mb-4">
             🏅 Mis Predicciones de Premios
@@ -422,7 +422,7 @@ export default function PerfilPage() {
           📜 Historial de Predicciones
         </h3>
         <div className="space-y-3 max-h-[600px] overflow-y-auto">
-          {data?.historialReciente.map((item) => (
+          {data.historialReciente.map((item) => (
             <div key={item.id} className="glass p-4 rounded-lg">
               <div className="flex items-center justify-between mb-3">
                 <div>
