@@ -1,0 +1,174 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ USUARIOS ============
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  nombre        String
+  password      String
+  avatar        String?
+  puntosTotal   Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  predicciones        Prediccion[]
+  prediccionesPremios PrediccionPremio[]
+}
+
+// ============ EQUIPOS ============
+model Equipo {
+  id          String   @id @default(cuid())
+  nombre      String   @unique
+  codigo      String   @unique  // Ej: "ARG", "BRA", "MEX"
+  bandera     String              // URL de la bandera
+  grupo       String              // Ej: "A", "B", "C"...
+
+  partidosLocal     Partido[] @relation("EquipoLocal")
+  partidosVisitante Partido[] @relation("EquipoVisitante")
+}
+
+// ============ PARTIDOS ============
+model Partido {
+  id              String   @id @default(cuid())
+  fase            Fase
+  grupo           String?            // Solo para fase de grupos
+  ronda           Ronda?             // Para eliminatorias
+  fecha           DateTime
+  sede            String
+  estadio         String
+
+  equipoLocalId     String
+  equipoVisitanteId String
+  equipoLocal       Equipo   @relation("EquipoLocal", fields: [equipoLocalId], references: [id])
+  equipoVisitante   Equipo   @relation("EquipoVisitante", fields: [equipoVisitanteId], references: [id])
+
+  golesLocal        Int?     // null = partido no jugado
+  golesVisitante    Int?
+  penalesLocal      Int?     // Para eliminatorias
+  penalesVisitante  Int?
+
+  estado          EstadoPartido @default(PENDIENTE)
+
+  predicciones    Prediccion[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum Fase {
+  GRUPOS
+  OCTAVOS
+  CUARTOS
+  SEMIFINAL
+  TERCER_PUESTO
+  FINAL
+}
+
+enum Ronda {
+  OCTAVOS_1
+  OCTAVOS_2
+  OCTAVOS_3
+  OCTAVOS_4
+  OCTAVOS_5
+  OCTAVOS_6
+  OCTAVOS_7
+  OCTAVOS_8
+  CUARTOS_1
+  CUARTOS_2
+  CUARTOS_3
+  CUARTOS_4
+  SEMIFINAL_1
+  SEMIFINAL_2
+  TERCER_PUESTO
+  FINAL
+}
+
+enum EstadoPartido {
+  PENDIENTE
+  EN_CURSO
+  FINALIZADO
+  SUSPENDIDO
+}
+
+// ============ PREDICCIONES ============
+model Prediccion {
+  id              String   @id @default(cuid())
+
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+
+  partidoId       String
+  partido         Partido  @relation(fields: [partidoId], references: [id])
+
+  golesLocal      Int
+  golesVisitante  Int
+
+  puntosObtenidos Int?     // null = no calculado aún
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, partidoId])  // Un usuario solo puede predecir una vez por partido
+}
+
+// ============ PREMIOS INDIVIDUALES ============
+model Premio {
+  id          String      @id @default(cuid())
+  tipo        TipoPremio  @unique
+  nombre      String
+  descripcion String
+  puntos      Int         // Puntos por acertar
+
+  predicciones PrediccionPremio[]
+}
+
+enum TipoPremio {
+  BALON_ORO       // Mejor jugador
+  BOTA_ORO        // Máximo goleador
+  GUANTE_ORO      // Mejor portero
+  CAMPEON         // Equipo campeón
+  SUBCAMPEON      // Equipo subcampeón
+}
+
+model Jugador {
+  id          String   @id @default(cuid())
+  nombre      String
+  posicion    String
+  equipoId    String
+  foto        String?
+
+  predicciones PrediccionPremio[]
+}
+
+model PrediccionPremio {
+  id          String   @id @default(cuid())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  premioId    String
+  premio      Premio   @relation(fields: [premioId], references: [id])
+
+  // Para premios de jugador
+  jugadorId   String?
+  jugador     Jugador? @relation(fields: [jugadorId], references: [id])
+
+  // Para premios de equipo (Campeón, Subcampeón)
+  equipoId    String?
+
+  acertado    Boolean?  // null = no definido aún
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, premioId])
+}

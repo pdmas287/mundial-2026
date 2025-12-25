@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap');
+
+:root {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-orbitron: 'Orbitron', sans-serif;
+}
+
+body {
+  font-family: var(--font-outfit);
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent;
+  }
+
+  .btn-predict {
+    @apply bg-gradient-to-r from-cyan-400 to-green-400 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50;
+  }
+}
