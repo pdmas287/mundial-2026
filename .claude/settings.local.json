@@ -12,7 +12,10 @@
       "Bash(node -e:*)",
       "Bash(node setup-env.js:*)",
       "Bash(npx prisma db push)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

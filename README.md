@@ -1,6 +1,17 @@
 # 🏆 Mundial 2026 - Predicciones
 
+[![CI](https://github.com/pdmas287/mundial-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/pdmas287/mundial-2026/actions/workflows/ci.yml)
+
 Plataforma web para realizar predicciones del Mundial de Fútbol 2026 y competir con otros usuarios.
+
+## ✨ Estado del Proyecto
+
+- ✅ Proyecto Next.js 14 configurado
+- ✅ Base de datos PostgreSQL con Prisma
+- ✅ 48 equipos y 72 partidos de grupos cargados
+- ✅ Sistema de puntuación implementado
+- ⬜ Autenticación (En progreso)
+- ⬜ Dashboard y predicciones (Pendiente)
 
 ## 🚀 Stack Tecnológico
 
@@ -15,7 +26,7 @@ Plataforma web para realizar predicciones del Mundial de Fútbol 2026 y competir
 
 1. Clona el repositorio
 ```bash
-git clone <tu-repositorio>
+git clone https://github.com/pdmas287/mundial-2026.git
 cd mundial-2026
 ```
 
