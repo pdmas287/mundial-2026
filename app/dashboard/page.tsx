@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import { signOut } from '@/auth'
-import Button from '@/components/ui/Button'
+import Link from 'next/link'
+import Card from '@/components/ui/Card'
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -11,73 +11,91 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]">
-      {/* Header */}
-      <header className="border-b border-white/10 p-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <span className="text-4xl">⚽</span>
-            <div>
-              <h1 className="font-orbitron text-2xl font-black gradient-text">
-                MUNDIAL 2026
-              </h1>
-              <p className="text-white/50 text-sm">Dashboard</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-white font-semibold">{session.user?.name}</p>
-              <p className="text-white/50 text-sm">{session.user?.email}</p>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 flex items-center justify-center text-2xl">
-              {session.user?.image || '⭐'}
-            </div>
-            <form
-              action={async () => {
-                'use server'
-                await signOut()
-              }}
-            >
-              <Button type="submit" variant="secondary" size="sm">
-                Cerrar Sesión
-              </Button>
-            </form>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="glass rounded-2xl p-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            ¡Bienvenido, {session.user?.name}! 👋
-          </h2>
-          <p className="text-white/70 mb-8">
-            Has iniciado sesión exitosamente. El dashboard completo estará disponible pronto.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="glass rounded-xl p-6">
-              <span className="text-4xl mb-2 block">📅</span>
-              <h3 className="text-xl font-bold text-white mb-2">Calendario</h3>
-              <p className="text-white/60 text-sm">Próximamente</p>
-            </div>
-
-            <div className="glass rounded-xl p-6">
-              <span className="text-4xl mb-2 block">🎯</span>
-              <h3 className="text-xl font-bold text-white mb-2">Predicciones</h3>
-              <p className="text-white/60 text-sm">Próximamente</p>
-            </div>
-
-            <div className="glass rounded-xl p-6">
-              <span className="text-4xl mb-2 block">🏆</span>
-              <h3 className="text-xl font-bold text-white mb-2">Ranking</h3>
-              <p className="text-white/60 text-sm">Próximamente</p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Welcome */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-white mb-2">
+          ¡Bienvenido, {session.user?.name}! 👋
+        </h1>
+        <p className="text-white/60">
+          Comienza a hacer tus predicciones para el Mundial 2026
+        </p>
       </div>
-    </main>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link href="/dashboard/calendario">
+          <Card hover className="text-center cursor-pointer h-full">
+            <span className="text-5xl mb-3 block">📅</span>
+            <h3 className="text-xl font-bold text-white mb-2">Calendario</h3>
+            <p className="text-white/60 text-sm">Ver partidos y hacer predicciones</p>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/predicciones">
+          <Card hover className="text-center cursor-pointer h-full">
+            <span className="text-5xl mb-3 block">🎯</span>
+            <h3 className="text-xl font-bold text-white mb-2">Mis Predicciones</h3>
+            <p className="text-white/60 text-sm">Revisa tus pronósticos</p>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/ranking">
+          <Card hover className="text-center cursor-pointer h-full">
+            <span className="text-5xl mb-3 block">🏆</span>
+            <h3 className="text-xl font-bold text-white mb-2">Ranking</h3>
+            <p className="text-white/60 text-sm">Ve tu posición global</p>
+          </Card>
+        </Link>
+      </div>
+
+      {/* Info Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4">🎮 Cómo Jugar</h3>
+          <ul className="space-y-2 text-white/70">
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">1.</span>
+              <span>Ve al calendario y selecciona los partidos</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">2.</span>
+              <span>Predice el resultado ingresando los goles</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">3.</span>
+              <span>Guarda tus predicciones antes que empiece el partido</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-yellow-400">4.</span>
+              <span>Gana puntos por cada acierto y sube en el ranking</span>
+            </li>
+          </ul>
+        </Card>
+
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4">🏅 Sistema de Puntos</h3>
+          <div className="space-y-3 text-white/70">
+            <div className="flex justify-between items-center">
+              <span>Resultado exacto</span>
+              <span className="font-bold text-green-400">5 pts</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Goles de un equipo</span>
+              <span className="font-bold text-cyan-400">2 pts</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Ganador/Empate</span>
+              <span className="font-bold text-yellow-400">1 pt</span>
+            </div>
+            <div className="pt-3 border-t border-white/10">
+              <p className="text-sm text-white/50">
+                Los puntos se multiplican según la fase del torneo (hasta x3 en la final)
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
   )
 }
