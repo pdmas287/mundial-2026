@@ -17,7 +17,12 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(npm run dev:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(rd /s /q .next)",
+      "Bash(powershell -Command:*)",
+      "Bash(components, refreshing...\".\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)"
     ]
   }
 }
