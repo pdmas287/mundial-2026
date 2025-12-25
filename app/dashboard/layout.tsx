@@ -18,8 +18,10 @@ export default async function DashboardLayout({
     { href: '/dashboard', label: '📊 Resumen', icon: '📊', adminOnly: false },
     { href: '/dashboard/calendario', label: '📅 Calendario', icon: '📅', adminOnly: false },
     { href: '/dashboard/predicciones', label: '🎯 Mis Predicciones', icon: '🎯', adminOnly: false },
-    { href: '/dashboard/ranking', label: '🏆 Ranking', icon: '🏆', adminOnly: false },
+    { href: '/dashboard/brackets', label: '🏆 Brackets', icon: '🏆', adminOnly: false },
+    { href: '/dashboard/ranking', label: '📈 Ranking', icon: '📈', adminOnly: false },
     { href: '/dashboard/premios', label: '🥇 Premios', icon: '🥇', adminOnly: false },
+    { href: '/dashboard/perfil', label: '👤 Perfil', icon: '👤', adminOnly: false },
     { href: '/dashboard/admin', label: '⚙️ Admin', icon: '⚙️', adminOnly: true },
   ]
 
