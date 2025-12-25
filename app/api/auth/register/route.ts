@@ -38,12 +38,14 @@ export async function POST(request: Request) {
         email,
         nombre,
         password: hashedPassword,
+        role: 'USER', // Todos los nuevos usuarios son USER por defecto
         puntosTotal: 0,
       },
       select: {
         id: true,
         email: true,
         nombre: true,
+        role: true,
         createdAt: true,
       },
     })

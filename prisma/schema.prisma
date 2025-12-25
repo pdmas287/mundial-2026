@@ -16,12 +16,18 @@ model User {
   nombre        String
   password      String
   avatar        String?
+  role          Role      @default(USER)
   puntosTotal   Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   predicciones        Prediccion[]
   prediccionesPremios PrediccionPremio[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 // ============ EQUIPOS ============

@@ -2,19 +2,31 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 
 export default function AdminPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [partidos, setPartidos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState<string | null>(null)
   const [recalculating, setRecalculating] = useState(false)
 
+  // Verificar si el usuario es administrador
   useEffect(() => {
-    fetchPartidos()
-  }, [])
+    if (status === 'loading') return
+
+    if (!session || session.user.role !== 'ADMIN') {
+      redirect('/dashboard')
+    }
+  }, [session, status])
+
+  useEffect(() => {
+    if (session?.user.role === 'ADMIN') {
+      fetchPartidos()
+    }
+  }, [session])
 
   const fetchPartidos = async () => {
     try {
@@ -84,6 +96,16 @@ export default function AdminPage() {
     } finally {
       setRecalculating(false)
     }
+  }
+
+  // Mostrar loading mientras verifica permisos
+  if (status === 'loading' || !session) {
+    return (
+      <div className="text-center py-12">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-yellow-400 border-r-transparent"></div>
+        <p className="text-white/60 mt-4">Verificando permisos...</p>
+      </div>
+    )
   }
 
   return (

@@ -14,6 +14,14 @@ export async function POST(request: Request) {
       )
     }
 
+    // Solo administradores pueden recalcular puntos
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permisos para realizar esta acción' },
+        { status: 403 }
+      )
+    }
+
     // Obtener todos los partidos finalizados
     const partidosFinalizados = await prisma.partido.findMany({
       where: {

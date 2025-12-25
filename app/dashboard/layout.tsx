@@ -15,13 +15,21 @@ export default async function DashboardLayout({
   }
 
   const navItems = [
-    { href: '/dashboard', label: '📊 Resumen', icon: '📊' },
-    { href: '/dashboard/calendario', label: '📅 Calendario', icon: '📅' },
-    { href: '/dashboard/predicciones', label: '🎯 Mis Predicciones', icon: '🎯' },
-    { href: '/dashboard/ranking', label: '🏆 Ranking', icon: '🏆' },
-    { href: '/dashboard/premios', label: '🥇 Premios', icon: '🥇' },
-    { href: '/dashboard/admin', label: '⚙️ Admin', icon: '⚙️' },
+    { href: '/dashboard', label: '📊 Resumen', icon: '📊', adminOnly: false },
+    { href: '/dashboard/calendario', label: '📅 Calendario', icon: '📅', adminOnly: false },
+    { href: '/dashboard/predicciones', label: '🎯 Mis Predicciones', icon: '🎯', adminOnly: false },
+    { href: '/dashboard/ranking', label: '🏆 Ranking', icon: '🏆', adminOnly: false },
+    { href: '/dashboard/premios', label: '🥇 Premios', icon: '🥇', adminOnly: false },
+    { href: '/dashboard/admin', label: '⚙️ Admin', icon: '⚙️', adminOnly: true },
   ]
+
+  // Filtrar items basados en el rol del usuario
+  const filteredNavItems = navItems.filter(item => {
+    if (item.adminOnly) {
+      return session.user?.role === 'ADMIN'
+    }
+    return true
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]">
@@ -62,7 +70,7 @@ export default async function DashboardLayout({
 
           {/* Navigation */}
           <nav className="mt-4 flex gap-2 overflow-x-auto pb-2">
-            {navItems.map((item) => (
+            {filteredNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

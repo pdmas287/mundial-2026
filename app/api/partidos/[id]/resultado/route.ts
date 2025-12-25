@@ -18,11 +18,19 @@ export async function POST(
   try {
     const session = await auth()
 
-    // Solo usuarios autenticados pueden actualizar resultados (en producción, agregar validación de admin)
+    // Solo usuarios autenticados pueden actualizar resultados
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'No autenticado' },
         { status: 401 }
+      )
+    }
+
+    // Solo administradores pueden actualizar resultados
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permisos para realizar esta acción' },
+        { status: 403 }
       )
     }
 
