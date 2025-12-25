@@ -114,9 +114,27 @@ export async function GET() {
       include: {
         premio: true,
         jugador: true,
-        equipo: true,
       },
     })
+
+    // Obtener equipos para las predicciones que tienen equipoId
+    const equipoIds = prediccionesPremios
+      .filter((p) => p.equipoId)
+      .map((p) => p.equipoId as string)
+
+    const equipos = equipoIds.length > 0
+      ? await prisma.equipo.findMany({
+          where: { id: { in: equipoIds } },
+        })
+      : []
+
+    // Mapear predicciones con datos de equipo
+    const prediccionesPremiosConEquipo = prediccionesPremios.map((pred) => ({
+      ...pred,
+      equipo: pred.equipoId
+        ? equipos.find((e) => e.id === pred.equipoId) || null
+        : null,
+    }))
 
     // Historial reciente (últimas 20 predicciones)
     const historialReciente = predicciones.slice(0, 20).map((p) => ({
@@ -149,7 +167,7 @@ export async function GET() {
         totalUsuarios,
       },
       estadisticasPorFase,
-      prediccionesPremios,
+      prediccionesPremios: prediccionesPremiosConEquipo,
       historialReciente,
     })
   } catch (error) {
