@@ -20,6 +20,7 @@ export default async function DashboardLayout({
     { href: '/dashboard/predicciones', label: '🎯 Mis Predicciones', icon: '🎯' },
     { href: '/dashboard/ranking', label: '🏆 Ranking', icon: '🏆' },
     { href: '/dashboard/premios', label: '🥇 Premios', icon: '🥇' },
+    { href: '/dashboard/admin', label: '⚙️ Admin', icon: '⚙️' },
   ]
 
   return (
