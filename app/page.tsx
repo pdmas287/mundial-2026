@@ -1,4 +1,15 @@
-export default function Home() {
+import Link from 'next/link'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
+
+export default async function Home() {
+  const session = await auth()
+
+  // Si ya está logueado, redirigir al dashboard
+  if (session) {
+    redirect('/dashboard')
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex items-center justify-center">
       <div className="text-center">
@@ -12,12 +23,12 @@ export default function Home() {
           PREDICCIONES
         </p>
         <div className="flex gap-4 justify-center">
-          <button className="glass px-8 py-3 rounded-full text-white font-semibold hover:bg-white/10 transition-all">
+          <Link href="/login" className="glass px-8 py-3 rounded-full text-white font-semibold hover:bg-white/10 transition-all">
             Iniciar Sesión
-          </button>
-          <button className="btn-predict px-8 py-3 rounded-full text-black font-bold">
+          </Link>
+          <Link href="/registro" className="btn-predict px-8 py-3 rounded-full text-black font-bold">
             Registrarse
-          </button>
+          </Link>
         </div>
       </div>
     </main>
