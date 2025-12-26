@@ -24,7 +24,6 @@ interface Partido {
   id: string
   fase: string
   fecha: string
-  hora: string
   sede: string
   golesLocal: number | null
   golesVisitante: number | null
@@ -117,7 +116,11 @@ export default function BracketsPage() {
                 })}
               </p>
               <p className="text-xs text-white/40">
-                {partido.hora} • {partido.sede}
+                {new Date(partido.fecha).toLocaleTimeString('es-ES', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}{' '}
+                • {partido.sede}
               </p>
             </div>
             <span className="text-3xl">{getFaseIcon(partido.fase)}</span>

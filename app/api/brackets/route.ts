@@ -26,10 +26,9 @@ export async function GET() {
           },
         },
       },
-      orderBy: [
-        { fecha: 'asc' },
-        { hora: 'asc' },
-      ],
+      orderBy: {
+        fecha: 'asc',
+      },
     })
 
     // Agrupar por fase
