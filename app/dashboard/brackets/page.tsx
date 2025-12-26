@@ -207,7 +207,7 @@ export default function BracketsPage() {
     )
   }
 
-  if (loading) {
+  if (loading || !data) {
     return (
       <div className="space-y-6">
         <div>
@@ -236,19 +236,19 @@ export default function BracketsPage() {
           <div className="text-center">
             <p className="text-xs text-white/60 mb-1">Predicciones</p>
             <p className="text-2xl font-black gradient-text">
-              {data?.estadisticas.totalPredicciones || 0}
+              {data.estadisticas.totalPredicciones || 0}
             </p>
           </div>
           <div className="text-center">
             <p className="text-xs text-white/60 mb-1">Acertadas</p>
             <p className="text-2xl font-black text-green-400">
-              {data?.estadisticas.prediccionesAcertadas || 0}
+              {data.estadisticas.prediccionesAcertadas || 0}
             </p>
           </div>
           <div className="text-center">
             <p className="text-xs text-white/60 mb-1">Puntos</p>
             <p className="text-2xl font-black text-yellow-400">
-              {data?.estadisticas.puntosEliminatorias || 0}
+              {data.estadisticas.puntosEliminatorias || 0}
             </p>
           </div>
         </div>
@@ -275,7 +275,7 @@ export default function BracketsPage() {
 
       {/* Lista de Partidos */}
       <div className="grid gap-4">
-        {data?.brackets[faseActiva].length === 0 ? (
+        {data.brackets[faseActiva].length === 0 ? (
           <Card className="text-center py-12">
             <span className="text-6xl mb-4 block">{getFaseIcon(faseActiva)}</span>
             <h3 className="text-2xl font-bold text-white mb-2">
@@ -286,7 +286,7 @@ export default function BracketsPage() {
             </p>
           </Card>
         ) : (
-          data?.brackets[faseActiva].map((partido) => renderPartido(partido))
+          data.brackets[faseActiva].map((partido) => renderPartido(partido))
         )}
       </div>
 
