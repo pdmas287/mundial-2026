@@ -12,7 +12,8 @@
     "db:studio": "prisma studio",
     "simular-resultados": "tsx scripts/simular-resultados.ts",
     "crear-admin": "tsx scripts/crear-admin.ts",
-    "recordatorios": "tsx scripts/recordatorios-partidos.ts"
+    "recordatorios": "tsx scripts/recordatorios-partidos.ts",
+    "asignar-clasificados": "tsx scripts/asignar-clasificados.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",

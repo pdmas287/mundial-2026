@@ -22,7 +22,14 @@
       "Bash(powershell -Command:*)",
       "Bash(components, refreshing...\".\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(lsof:*)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npx prisma:*)",
+      "Bash(attrib +U \"D:\\\\Users\\\\pdmas\\\\OneDrive\\\\Escritorio\\\\Python\\\\mundial_2026\\\\node_modules\")",
+      "Bash(taskkill:*)",
+      "Bash(rd /s /q node_modules.prisma)"
     ]
   }
 }

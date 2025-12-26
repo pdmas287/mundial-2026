@@ -11,15 +11,15 @@ datasource db {
 
 // ============ USUARIOS ============
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  nombre        String
-  password      String
-  avatar        String?
-  role          Role      @default(USER)
-  puntosTotal   Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  email       String   @unique
+  nombre      String
+  password    String
+  avatar      String?
+  role        Role     @default(USER)
+  puntosTotal Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   predicciones        Prediccion[]
   prediccionesPremios PrediccionPremio[]
@@ -33,11 +33,11 @@ enum Role {
 
 // ============ EQUIPOS ============
 model Equipo {
-  id          String   @id @default(cuid())
-  nombre      String   @unique
-  codigo      String   @unique  // Ej: "ARG", "BRA", "MEX"
-  bandera     String              // URL de la bandera
-  grupo       String              // Ej: "A", "B", "C"...
+  id      String @id @default(cuid())
+  nombre  String @unique
+  codigo  String @unique // Ej: "ARG", "BRA", "MEX"
+  bandera String // URL de la bandera
+  grupo   String // Ej: "A", "B", "C"...
 
   partidosLocal     Partido[] @relation("EquipoLocal")
   partidosVisitante Partido[] @relation("EquipoVisitante")
@@ -45,59 +45,85 @@ model Equipo {
 
 // ============ PARTIDOS ============
 model Partido {
-  id              String   @id @default(cuid())
-  fase            Fase
-  grupo           String?            // Solo para fase de grupos
-  ronda           Ronda?             // Para eliminatorias
-  fecha           DateTime
-  sede            String
-  estadio         String
+  id      String   @id @default(cuid())
+  fase    Fase
+  grupo   String? // Solo para fase de grupos
+  ronda   Ronda? // Para eliminatorias
+  fecha   DateTime
+  sede    String
+  estadio String
 
-  equipoLocalId     String
-  equipoVisitanteId String
-  equipoLocal       Equipo   @relation("EquipoLocal", fields: [equipoLocalId], references: [id])
-  equipoVisitante   Equipo   @relation("EquipoVisitante", fields: [equipoVisitanteId], references: [id])
+  equipoLocalId     String? // Opcional para permitir TBD en eliminatorias
+  equipoVisitanteId String? // Opcional para permitir TBD en eliminatorias
+  equipoLocal       Equipo? @relation("EquipoLocal", fields: [equipoLocalId], references: [id])
+  equipoVisitante   Equipo? @relation("EquipoVisitante", fields: [equipoVisitanteId], references: [id])
 
-  golesLocal        Int?     // null = partido no jugado
-  golesVisitante    Int?
-  penalesLocal      Int?     // Para eliminatorias
-  penalesVisitante  Int?
+  golesLocal       Int? // null = partido no jugado
+  golesVisitante   Int?
+  penalesLocal     Int? // Para eliminatorias
+  penalesVisitante Int?
 
-  estado          EstadoPartido @default(PENDIENTE)
+  estado EstadoPartido @default(PENDIENTE)
 
-  predicciones    Prediccion[]
-  notificaciones  Notificacion[]
+  predicciones   Prediccion[]
+  notificaciones Notificacion[]
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Fase {
   GRUPOS
-  OCTAVOS
-  CUARTOS
-  SEMIFINAL
-  TERCER_PUESTO
-  FINAL
+  DIECISEISAVOS // Round of 32 (nuevo para Mundial 2026)
+  OCTAVOS // Round of 16
+  CUARTOS // Quarter-finals
+  SEMIFINAL // Semi-finals
+  TERCER_PUESTO // Third place
+  FINAL // Final
 }
 
 enum Ronda {
-  OCTAVOS_1
-  OCTAVOS_2
-  OCTAVOS_3
-  OCTAVOS_4
-  OCTAVOS_5
-  OCTAVOS_6
-  OCTAVOS_7
-  OCTAVOS_8
-  CUARTOS_1
-  CUARTOS_2
-  CUARTOS_3
-  CUARTOS_4
-  SEMIFINAL_1
-  SEMIFINAL_2
-  TERCER_PUESTO
-  FINAL
+  // Dieciseisavos de final (16 partidos - M73 a M88)
+  M73 // 2A vs 2B
+  M74 // 1E vs 3er mejor
+  M75 // 1F vs 2C
+  M76 // 1C vs 2F
+  M77 // 1I vs 3er mejor
+  M78 // 2E vs 2I
+  M79 // 1A vs 3er mejor
+  M80 // 1L vs 3er mejor
+  M81 // 1D vs 3er mejor
+  M82 // 1G vs 3er mejor
+  M83 // 2K vs 2L
+  M84 // 1H vs 2J
+  M85 // 1B vs 3er mejor
+  M86 // 1J vs 2H
+  M87 // 1K vs 3er mejor
+  M88 // 2D vs 2G
+
+  // Octavos de final (8 partidos - M89 a M96)
+  M89 // W73 vs W75
+  M90 // W74 vs W77
+  M91 // W76 vs W78
+  M92 // W79 vs W80
+  M93 // W83 vs W84
+  M94 // W81 vs W82
+  M95 // W86 vs W88
+  M96 // W85 vs W87
+
+  // Cuartos de final (4 partidos - M97 a M100)
+  M97 // W89 vs W90
+  M98 // W93 vs W94
+  M99 // W91 vs W92
+  M100 // W95 vs W96
+
+  // Semifinales (2 partidos - M101 y M102)
+  M101 // W97 vs W98
+  M102 // W99 vs W100
+
+  // Tercer puesto y Final
+  M103 // RU101 vs RU102 (Tercer puesto)
+  M104 // W101 vs W102 (Final)
 }
 
 enum EstadoPartido {
@@ -109,95 +135,95 @@ enum EstadoPartido {
 
 // ============ PREDICCIONES ============
 model Prediccion {
-  id              String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  partidoId       String
-  partido         Partido  @relation(fields: [partidoId], references: [id])
+  partidoId String
+  partido   Partido @relation(fields: [partidoId], references: [id])
 
-  golesLocal      Int
-  golesVisitante  Int
+  golesLocal     Int
+  golesVisitante Int
 
-  puntosObtenidos Int?     // null = no calculado aún
+  puntosObtenidos Int? // null = no calculado aún
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([userId, partidoId])  // Un usuario solo puede predecir una vez por partido
+  @@unique([userId, partidoId]) // Un usuario solo puede predecir una vez por partido
 }
 
 // ============ PREMIOS INDIVIDUALES ============
 model Premio {
-  id          String      @id @default(cuid())
-  tipo        TipoPremio  @unique
+  id          String     @id @default(cuid())
+  tipo        TipoPremio @unique
   nombre      String
   descripcion String
-  puntos      Int         // Puntos por acertar
+  puntos      Int // Puntos por acertar
 
   predicciones PrediccionPremio[]
 }
 
 enum TipoPremio {
-  BALON_ORO       // Mejor jugador
-  BOTA_ORO        // Máximo goleador
-  GUANTE_ORO      // Mejor portero
-  CAMPEON         // Equipo campeón
-  SUBCAMPEON      // Equipo subcampeón
+  BALON_ORO // Mejor jugador
+  BOTA_ORO // Máximo goleador
+  GUANTE_ORO // Mejor portero
+  CAMPEON // Equipo campeón
+  SUBCAMPEON // Equipo subcampeón
 }
 
 model Jugador {
-  id          String   @id @default(cuid())
-  nombre      String
-  posicion    String
-  equipoId    String
-  foto        String?
+  id       String  @id @default(cuid())
+  nombre   String
+  posicion String
+  equipoId String
+  foto     String?
 
   predicciones PrediccionPremio[]
 }
 
 model PrediccionPremio {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  premioId    String
-  premio      Premio   @relation(fields: [premioId], references: [id])
+  premioId String
+  premio   Premio @relation(fields: [premioId], references: [id])
 
   // Para premios de jugador
-  jugadorId   String?
-  jugador     Jugador? @relation(fields: [jugadorId], references: [id])
+  jugadorId String?
+  jugador   Jugador? @relation(fields: [jugadorId], references: [id])
 
   // Para premios de equipo (Campeón, Subcampeón)
-  equipoId    String?
+  equipoId String?
 
-  acertado    Boolean?  // null = no definido aún
+  acertado Boolean? // null = no definido aún
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, premioId])
 }
 
 model Notificacion {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  tipo      TipoNotificacion
-  titulo    String
-  mensaje   String
+  tipo    TipoNotificacion
+  titulo  String
+  mensaje String
 
   // Datos relacionados (opcional)
   partidoId String?
   partido   Partido? @relation(fields: [partidoId], references: [id])
 
-  puntos    Int?     // Para notificaciones de puntos ganados
+  puntos Int? // Para notificaciones de puntos ganados
 
-  leida     Boolean  @default(false)
+  leida Boolean @default(false)
 
   createdAt DateTime @default(now())
 
@@ -206,8 +232,8 @@ model Notificacion {
 }
 
 enum TipoNotificacion {
-  PARTIDO_PROXIMO    // Partido por empezar
-  PUNTOS_GANADOS     // Puntos obtenidos por predicción
-  RESULTADO_PARTIDO  // Resultado de partido publicado
-  PREMIO_ACERTADO    // Premio individual acertado
+  PARTIDO_PROXIMO // Partido por empezar
+  PUNTOS_GANADOS // Puntos obtenidos por predicción
+  RESULTADO_PARTIDO // Resultado de partido publicado
+  PREMIO_ACERTADO // Premio individual acertado
 }

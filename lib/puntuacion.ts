@@ -12,11 +12,12 @@ interface Prediccion {
 
 const MULTIPLICADORES: Record<Fase, number> = {
   GRUPOS: 1,
-  OCTAVOS: 1.5,
-  CUARTOS: 2,
-  SEMIFINAL: 2.5,
-  TERCER_PUESTO: 2,
-  FINAL: 3,
+  DIECISEISAVOS: 1.25,  // Round of 32
+  OCTAVOS: 1.5,         // Round of 16
+  CUARTOS: 2,           // Quarter-finals
+  SEMIFINAL: 2.5,       // Semi-finals
+  TERCER_PUESTO: 2,     // Third place
+  FINAL: 3,             // Final
 };
 
 export function calcularPuntos(
