@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { z } from 'zod'
 import { calcularPuntos } from '@/lib/puntuacion'
+import { notificarPuntosGanados, notificarResultadoPublicado } from '@/lib/notificaciones'
 
 const resultadoSchema = z.object({
   golesLocal: z.number().min(0).max(20),
@@ -41,6 +42,8 @@ export async function POST(
     const partido = await prisma.partido.findUnique({
       where: { id: params.id },
       include: {
+        equipoLocal: true,
+        equipoVisitante: true,
         predicciones: {
           include: {
             user: true,
@@ -72,6 +75,9 @@ export async function POST(
     const prediccionesActualizadas = []
     const usuariosActualizados = new Set<string>()
 
+    const equipoLocal = partido.equipoLocal?.nombre || 'TBD'
+    const equipoVisitante = partido.equipoVisitante?.nombre || 'TBD'
+
     for (const prediccion of partido.predicciones) {
       const puntos = calcularPuntos(
         {
@@ -95,6 +101,24 @@ export async function POST(
 
       prediccionesActualizadas.push(prediccionActualizada)
       usuariosActualizados.add(prediccion.userId)
+
+      // Crear notificación de puntos ganados
+      await notificarPuntosGanados(
+        prediccion.userId,
+        puntos,
+        partido.id,
+        equipoLocal,
+        equipoVisitante
+      )
+
+      // Crear notificación de resultado publicado (solo una por usuario)
+      await notificarResultadoPublicado(
+        prediccion.userId,
+        partido.id,
+        equipoLocal,
+        equipoVisitante,
+        `${validatedData.golesLocal}-${validatedData.golesVisitante}`
+      )
     }
 
     // Recalcular puntos totales de cada usuario afectado
