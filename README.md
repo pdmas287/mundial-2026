@@ -6,12 +6,18 @@ Plataforma web para realizar predicciones del Mundial de Fútbol 2026 y competir
 
 ## ✨ Estado del Proyecto
 
-- ✅ Proyecto Next.js 14 configurado
-- ✅ Base de datos PostgreSQL con Prisma
+- ✅ Proyecto Next.js 14 configurado con App Router
+- ✅ Base de datos PostgreSQL con Prisma + Supabase
 - ✅ 48 equipos y 72 partidos de grupos cargados
-- ✅ Sistema de puntuación implementado
-- ⬜ Autenticación (En progreso)
-- ⬜ Dashboard y predicciones (Pendiente)
+- ✅ Sistema de puntuación con multiplicadores por fase
+- ✅ Autenticación completa (NextAuth.js)
+- ✅ Dashboard completo con todas las páginas
+- ✅ Sistema de predicciones en tiempo real
+- ✅ Visualización de brackets interactiva
+- ✅ Ranking global y por grupos
+- ✅ Sistema de notificaciones en tiempo real
+- ✅ **Sistema de clasificación automática FIFA** (Mundial 2026 con 48 equipos)
+- ⬜ Testing y deployment (Pendiente)
 
 ## 🚀 Stack Tecnológico
 
@@ -82,10 +88,14 @@ mundial-2026/
 │   ├── prisma.ts         # Cliente de Prisma
 │   ├── auth.ts           # Configuración de NextAuth
 │   ├── puntuacion.ts     # Lógica de puntuación
+│   ├── clasificacion.ts  # Sistema de clasificación FIFA
+│   ├── anexo-c.ts        # Anexo C - Asignación de terceros
 │   └── utils.ts          # Utilidades generales
 ├── prisma/               # Configuración de Prisma
 │   ├── schema.prisma     # Schema de la base de datos
 │   └── seed.ts           # Datos iniciales
+├── scripts/              # Scripts de automatización
+│   └── asignar-clasificados.ts  # Script de clasificación
 ├── types/                # Tipos TypeScript
 └── public/               # Archivos estáticos
     ├── banderas/         # Banderas de equipos
@@ -95,13 +105,14 @@ mundial-2026/
 ## 🎮 Comandos Disponibles
 
 ```bash
-npm run dev          # Inicia el servidor de desarrollo
-npm run build        # Construye la aplicación para producción
-npm run start        # Inicia el servidor de producción
-npm run lint         # Ejecuta el linter
-npm run db:push      # Sincroniza el schema con la BD
-npm run db:seed      # Carga datos iniciales
-npm run db:studio    # Abre Prisma Studio
+npm run dev                    # Inicia el servidor de desarrollo
+npm run build                  # Construye la aplicación para producción
+npm run start                  # Inicia el servidor de producción
+npm run lint                   # Ejecuta el linter
+npm run db:push                # Sincroniza el schema con la BD
+npm run db:seed                # Carga datos iniciales
+npm run db:studio              # Abre Prisma Studio
+npm run asignar-clasificados   # Asigna equipos clasificados a eliminatorias
 ```
 
 ## 🎯 Sistema de Puntuación
@@ -112,27 +123,91 @@ npm run db:studio    # Abre Prisma Studio
 - **Ganador/Empate:** 1 punto
 
 ### Multiplicadores por Fase
-- Fase de Grupos: x1
-- Octavos: x1.5
-- Cuartos: x2
-- Semifinales: x2.5
-- Tercer Puesto: x2
-- Final: x3
+
+- Fase de Grupos: x1 (5 puntos máx.)
+- **Dieciseisavos: x1.25 (6 puntos máx.)**
+- Octavos: x1.5 (7 puntos máx.)
+- Cuartos: x2 (10 puntos máx.)
+- Semifinales: x2.5 (12 puntos máx.)
+- Tercer Puesto: x2 (10 puntos máx.)
+- Final: x3 (15 puntos máx.)
 
 ### Premios Individuales
+
 - Campeón: 25 puntos
 - Subcampeón: 15 puntos
 - Balón de Oro: 20 puntos
 - Bota de Oro: 20 puntos
 - Guante de Oro: 15 puntos
 
+---
+
+## 🏆 Sistema de Clasificación Automática (Mundial 2026)
+
+### Estructura del Torneo
+
+El Mundial 2026 es el primero con **48 equipos**:
+
+- **12 grupos** (A-L) de 4 equipos cada uno
+- **32 equipos clasifican**: 12 primeros + 12 segundos + 8 mejores terceros
+- **Fases**: GRUPOS → DIECISEISAVOS → OCTAVOS → CUARTOS → SEMIFINALES → FINAL
+
+### Reglas de Clasificación FIFA
+
+El sistema implementa las reglas oficiales de FIFA:
+
+**Artículo 12 - Desempate dentro de grupos:**
+
+1. Mayor número de puntos
+2. Mejor diferencia de goles
+3. Mayor número de goles a favor
+4. Head-to-head (enfrentamientos directos)
+5. Puntos Fair Play
+6. Ranking FIFA
+
+**Artículo 13 - Mejores terceros lugares:**
+
+Se seleccionan los 8 mejores terceros de los 12 grupos aplicando los mismos criterios.
+
+**Anexo C - Asignación de terceros:**
+
+Los 8 mejores terceros se asignan a partidos específicos según qué grupos tienen terceros clasificados (495 combinaciones posibles).
+
+### Uso del Sistema
+
+Cuando la fase de grupos esté completa, ejecuta:
+
+```bash
+npm run asignar-clasificados
+```
+
+Este comando automáticamente:
+
+1. ✅ Verifica que todos los partidos de grupos estén finalizados
+2. ✅ Calcula posiciones de cada grupo con reglas de desempate
+3. ✅ Selecciona los 8 mejores terceros lugares
+4. ✅ Asigna los 32 equipos a los 16 partidos de dieciseisavos
+5. ✅ Aplica el Anexo C para emparejamientos de terceros
+
+### Archivos del Sistema
+
+- [`lib/clasificacion.ts`](lib/clasificacion.ts) - Cálculo de posiciones y reglas FIFA
+- [`lib/anexo-c.ts`](lib/anexo-c.ts) - Implementación del Anexo C
+- [`scripts/asignar-clasificados.ts`](scripts/asignar-clasificados.ts) - Script de ejecución
+- [`CLASIFICACION_MUNDIAL_2026.md`](CLASIFICACION_MUNDIAL_2026.md) - Documentación completa
+
+---
+
 ## 📝 Próximos Pasos
 
-- [ ] Implementar autenticación con NextAuth
-- [ ] Crear páginas del dashboard
-- [ ] Implementar sistema de predicciones
-- [ ] Crear visualización de brackets
-- [ ] Implementar ranking en tiempo real
+- [x] Implementar autenticación con NextAuth
+- [x] Crear páginas del dashboard
+- [x] Implementar sistema de predicciones
+- [x] Crear visualización de brackets
+- [x] Implementar ranking en tiempo real
+- [x] Implementar sistema de notificaciones
+- [x] Implementar clasificación automática FIFA
+- [ ] Testing exhaustivo
 - [ ] Agregar datos reales del Mundial 2026
 - [ ] Deploy en Vercel
 
