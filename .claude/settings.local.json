@@ -29,7 +29,11 @@
       "Bash(npx prisma:*)",
       "Bash(attrib +U \"D:\\\\Users\\\\pdmas\\\\OneDrive\\\\Escritorio\\\\Python\\\\mundial_2026\\\\node_modules\")",
       "Bash(taskkill:*)",
-      "Bash(rd /s /q node_modules.prisma)"
+      "Bash(rd /s /q node_modules.prisma)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(echo:*)",
+      "Bash(npm run db:seed:*)"
     ]
   }
 }

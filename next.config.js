@@ -8,6 +8,13 @@ const nextConfig = {
       },
     ],
   },
+  // Suprimir warning de webpack sobre strings grandes
+  webpack: (config, { isServer }) => {
+    config.infrastructureLogging = {
+      level: 'error',
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig
