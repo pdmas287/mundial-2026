@@ -14,7 +14,7 @@ export async function GET() {
     const partidos = await prisma.partido.findMany({
       where: {
         fase: {
-          in: ['OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'],
+          in: ['DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'],
         },
       },
       include: {
@@ -33,6 +33,7 @@ export async function GET() {
 
     // Agrupar por fase
     const brackets = {
+      DIECISEISAVOS: partidos.filter((p) => p.fase === 'DIECISEISAVOS'),
       OCTAVOS: partidos.filter((p) => p.fase === 'OCTAVOS'),
       CUARTOS: partidos.filter((p) => p.fase === 'CUARTOS'),
       SEMIFINAL: partidos.filter((p) => p.fase === 'SEMIFINAL'),
@@ -46,7 +47,7 @@ export async function GET() {
         userId: session.user.id,
         partido: {
           fase: {
-            in: ['OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'],
+            in: ['DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'],
           },
         },
       },

@@ -13,7 +13,9 @@
     "simular-resultados": "tsx scripts/simular-resultados.ts",
     "crear-admin": "tsx scripts/crear-admin.ts",
     "recordatorios": "tsx scripts/recordatorios-partidos.ts",
-    "asignar-clasificados": "tsx scripts/asignar-clasificados.ts"
+    "asignar-clasificados": "tsx scripts/asignar-clasificados.ts",
+    "avanzar-eliminatorias": "tsx scripts/avanzar-eliminatorias.ts",
+    "actualizar-equipo": "tsx scripts/actualizar-equipo.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",

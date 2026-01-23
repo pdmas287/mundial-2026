@@ -1,9 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+
+// Helper para verificar si es una URL o un emoji
+const isUrl = (str: string) => str.startsWith('http') || str.startsWith('/')
+
+// Componente para mostrar bandera
+const Bandera = ({ src, alt, size = 40 }: { src: string; alt: string; size?: number }) => {
+  if (isUrl(src)) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={Math.round(size * 0.75)}
+        className="rounded shadow-lg"
+      />
+    )
+  }
+  return <span className="text-4xl">{src}</span>
+}
 
 interface Equipo {
   id: string
@@ -34,6 +54,7 @@ interface Partido {
 
 interface BracketsData {
   brackets: {
+    DIECISEISAVOS: Partido[]
     OCTAVOS: Partido[]
     CUARTOS: Partido[]
     SEMIFINAL: Partido[]
@@ -52,8 +73,8 @@ export default function BracketsPage() {
   const [data, setData] = useState<BracketsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [faseActiva, setFaseActiva] = useState<
-    'OCTAVOS' | 'CUARTOS' | 'SEMIFINAL' | 'TERCER_PUESTO' | 'FINAL'
-  >('OCTAVOS')
+    'DIECISEISAVOS' | 'OCTAVOS' | 'CUARTOS' | 'SEMIFINAL' | 'TERCER_PUESTO' | 'FINAL'
+  >('DIECISEISAVOS')
 
   useEffect(() => {
     fetchBrackets()
@@ -74,6 +95,7 @@ export default function BracketsPage() {
 
   const getFaseLabel = (fase: string) => {
     const labels: Record<string, string> = {
+      DIECISEISAVOS: 'Dieciseisavos',
       OCTAVOS: 'Octavos de Final',
       CUARTOS: 'Cuartos de Final',
       SEMIFINAL: 'Semifinales',
@@ -85,6 +107,7 @@ export default function BracketsPage() {
 
   const getFaseIcon = (fase: string) => {
     const icons: Record<string, string> = {
+      DIECISEISAVOS: '🎯',
       OCTAVOS: '⚽',
       CUARTOS: '🔥',
       SEMIFINAL: '⭐',
@@ -132,7 +155,7 @@ export default function BracketsPage() {
               {/* Equipo Local */}
               <div className="flex items-center justify-between glass p-4 rounded-lg">
                 <div className="flex items-center gap-3 flex-1">
-                  <span className="text-4xl">{partido.equipoLocal!.bandera}</span>
+                  <Bandera src={partido.equipoLocal!.bandera} alt={partido.equipoLocal!.nombre} />
                   <div>
                     <p className="font-bold text-white text-lg">
                       {partido.equipoLocal!.nombre}
@@ -148,7 +171,7 @@ export default function BracketsPage() {
               {/* Equipo Visitante */}
               <div className="flex items-center justify-between glass p-4 rounded-lg">
                 <div className="flex items-center gap-3 flex-1">
-                  <span className="text-4xl">{partido.equipoVisitante!.bandera}</span>
+                  <Bandera src={partido.equipoVisitante!.bandera} alt={partido.equipoVisitante!.nombre} />
                   <div>
                     <p className="font-bold text-white text-lg">
                       {partido.equipoVisitante!.nombre}
@@ -259,7 +282,7 @@ export default function BracketsPage() {
 
       {/* Selector de Fase */}
       <div className="flex gap-2 overflow-x-auto pb-2">
-        {(['OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'] as const).map(
+        {(['DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', 'SEMIFINAL', 'TERCER_PUESTO', 'FINAL'] as const).map(
           (fase) => (
             <button
               key={fase}

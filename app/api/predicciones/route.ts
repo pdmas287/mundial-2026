@@ -7,6 +7,9 @@ const prediccionSchema = z.object({
   partidoId: z.string(),
   golesLocal: z.number().min(0).max(20),
   golesVisitante: z.number().min(0).max(20),
+  // Penales opcionales (solo para eliminatorias cuando se predice empate)
+  penalesLocal: z.number().min(0).max(20).optional().nullable(),
+  penalesVisitante: z.number().min(0).max(20).optional().nullable(),
 })
 
 export async function POST(request: Request) {
@@ -43,6 +46,30 @@ export async function POST(request: Request) {
       )
     }
 
+    // Validar penales: solo permitir si es eliminatoria y predice empate
+    const esEliminatoria = partido.fase !== 'GRUPOS'
+    const prediceEmpate = validatedData.golesLocal === validatedData.golesVisitante
+    const incluyePenales = validatedData.penalesLocal != null && validatedData.penalesVisitante != null
+
+    // Si predice empate en eliminatoria, debe incluir penales
+    if (esEliminatoria && prediceEmpate && !incluyePenales) {
+      return NextResponse.json(
+        { error: 'En eliminatorias, si predices empate debes incluir el resultado de penales' },
+        { status: 400 }
+      )
+    }
+
+    // Limpiar penales si no aplican (no es empate o no es eliminatoria)
+    const penalesData = esEliminatoria && prediceEmpate
+      ? {
+          penalesLocal: validatedData.penalesLocal,
+          penalesVisitante: validatedData.penalesVisitante,
+        }
+      : {
+          penalesLocal: null,
+          penalesVisitante: null,
+        }
+
     // Crear o actualizar predicción
     const prediccion = await prisma.prediccion.upsert({
       where: {
@@ -54,12 +81,14 @@ export async function POST(request: Request) {
       update: {
         golesLocal: validatedData.golesLocal,
         golesVisitante: validatedData.golesVisitante,
+        ...penalesData,
       },
       create: {
         userId: session.user.id,
         partidoId: validatedData.partidoId,
         golesLocal: validatedData.golesLocal,
         golesVisitante: validatedData.golesVisitante,
+        ...penalesData,
       },
     })
 

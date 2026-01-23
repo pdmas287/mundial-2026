@@ -1,8 +1,28 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+
+// Helper para verificar si es una URL o un emoji
+const isUrl = (str: string) => str.startsWith('http') || str.startsWith('/')
+
+// Componente para mostrar bandera
+const Bandera = ({ src, alt, size = 32 }: { src: string; alt: string; size?: number }) => {
+  if (isUrl(src)) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={Math.round(size * 0.75)}
+        className="rounded shadow"
+      />
+    )
+  }
+  return <span className={size > 30 ? 'text-4xl' : 'text-2xl'}>{src}</span>
+}
 
 interface Premio {
   id: string
@@ -180,16 +200,17 @@ export default function PremiosPage() {
                           </div>
                         </>
                       )}
-                      {esEquipo && prediccion.equipoId && (
-                        <>
-                          <span className="text-3xl">
-                            {data.equipos.find((e) => e.id === prediccion.equipoId)?.bandera}
-                          </span>
-                          <p className="font-bold text-white">
-                            {data.equipos.find((e) => e.id === prediccion.equipoId)?.nombre}
-                          </p>
-                        </>
-                      )}
+                      {esEquipo && prediccion.equipoId && (() => {
+                        const equipo = data.equipos.find((e) => e.id === prediccion.equipoId)
+                        return equipo ? (
+                          <>
+                            <Bandera src={equipo.bandera} alt={equipo.nombre} size={32} />
+                            <p className="font-bold text-white">
+                              {equipo.nombre}
+                            </p>
+                          </>
+                        ) : null
+                      })()}
                     </div>
                   </div>
                 )}
@@ -255,7 +276,9 @@ export default function PremiosPage() {
                                 : 'border border-white/10'
                             }`}
                           >
-                            <span className="text-4xl block mb-2">{equipo.bandera}</span>
+                            <div className="flex justify-center mb-2">
+                              <Bandera src={equipo.bandera} alt={equipo.nombre} size={40} />
+                            </div>
                             <p className="font-semibold text-white text-sm">{equipo.nombre}</p>
                             {prediccion?.equipoId === equipo.id && (
                               <span className="text-yellow-400 mt-2 block">✓</span>

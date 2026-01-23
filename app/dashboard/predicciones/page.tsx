@@ -1,9 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import Card from '@/components/ui/Card'
 import { formatDate, formatTime } from '@/lib/utils'
+
+// Helper para verificar si es una URL o un emoji
+const isUrl = (str: string) => str.startsWith('http') || str.startsWith('/')
+
+// Componente para mostrar bandera
+const Bandera = ({ src, alt, size = 24 }: { src: string; alt: string; size?: number }) => {
+  if (isUrl(src)) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={Math.round(size * 0.75)}
+        className="rounded shadow"
+      />
+    )
+  }
+  return <span className="text-2xl">{src}</span>
+}
 
 export default function PrediccionesPage() {
   const { data: session } = useSession()
@@ -104,11 +124,11 @@ export default function PrediccionesPage() {
                   {/* Info del partido */}
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">{partido.equipoLocal.bandera}</span>
+                      <Bandera src={partido.equipoLocal.bandera} alt={partido.equipoLocal.nombre} />
                       <span className="font-bold text-white">{partido.equipoLocal.nombre}</span>
                       <span className="text-white/40">vs</span>
                       <span className="font-bold text-white">{partido.equipoVisitante.nombre}</span>
-                      <span className="text-2xl">{partido.equipoVisitante.bandera}</span>
+                      <Bandera src={partido.equipoVisitante.bandera} alt={partido.equipoVisitante.nombre} />
                     </div>
                     <div className="flex items-center gap-4 text-sm text-white/50">
                       <span>📅 {formatDate(fechaPartido)}</span>

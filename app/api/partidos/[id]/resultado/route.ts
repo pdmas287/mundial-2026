@@ -10,6 +10,13 @@ const resultadoSchema = z.object({
   golesVisitante: z.number().min(0).max(20),
   penalesLocal: z.number().min(0).max(20).optional(),
   penalesVisitante: z.number().min(0).max(20).optional(),
+  // Tarjetas para Fair Play
+  tarjetasAmarillasLocal: z.number().min(0).max(20).optional(),
+  tarjetasRojasLocal: z.number().min(0).max(20).optional(),
+  tarjetasDobleAmarillaLocal: z.number().min(0).max(20).optional(),
+  tarjetasAmarillasVisitante: z.number().min(0).max(20).optional(),
+  tarjetasRojasVisitante: z.number().min(0).max(20).optional(),
+  tarjetasDobleAmarillaVisitante: z.number().min(0).max(20).optional(),
 })
 
 export async function POST(
@@ -67,6 +74,13 @@ export async function POST(
         golesVisitante: validatedData.golesVisitante,
         penalesLocal: validatedData.penalesLocal,
         penalesVisitante: validatedData.penalesVisitante,
+        // Tarjetas para Fair Play
+        tarjetasAmarillasLocal: validatedData.tarjetasAmarillasLocal ?? 0,
+        tarjetasRojasLocal: validatedData.tarjetasRojasLocal ?? 0,
+        tarjetasDobleAmarillaLocal: validatedData.tarjetasDobleAmarillaLocal ?? 0,
+        tarjetasAmarillasVisitante: validatedData.tarjetasAmarillasVisitante ?? 0,
+        tarjetasRojasVisitante: validatedData.tarjetasRojasVisitante ?? 0,
+        tarjetasDobleAmarillaVisitante: validatedData.tarjetasDobleAmarillaVisitante ?? 0,
         estado: 'FINALIZADO',
       },
     })
@@ -83,10 +97,14 @@ export async function POST(
         {
           golesLocal: prediccion.golesLocal,
           golesVisitante: prediccion.golesVisitante,
+          penalesLocal: prediccion.penalesLocal,
+          penalesVisitante: prediccion.penalesVisitante,
         },
         {
           golesLocal: validatedData.golesLocal,
           golesVisitante: validatedData.golesVisitante,
+          penalesLocal: validatedData.penalesLocal,
+          penalesVisitante: validatedData.penalesVisitante,
         },
         partido.fase
       )

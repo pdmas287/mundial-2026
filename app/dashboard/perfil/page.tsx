@@ -1,9 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+
+// Helper para verificar si es una URL o un emoji
+const isUrl = (str: string) => str.startsWith('http') || str.startsWith('/')
+
+// Componente para mostrar bandera
+const Bandera = ({ src, alt, size = 20 }: { src: string; alt: string; size?: number }) => {
+  if (isUrl(src)) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={Math.round(size * 0.75)}
+        className="rounded shadow"
+      />
+    )
+  }
+  return <span className="text-lg">{src}</span>
+}
 
 interface Usuario {
   id: string
@@ -455,7 +475,7 @@ export default function PerfilPage() {
                   <p className="text-xs text-white/40 mb-2">Tu predicción:</p>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">{item.banderaLocal}</span>
+                      <Bandera src={item.banderaLocal} alt={item.equipoLocal} />
                       <span className="text-sm text-white flex-1 truncate">
                         {item.equipoLocal}
                       </span>
@@ -464,7 +484,7 @@ export default function PerfilPage() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">{item.banderaVisitante}</span>
+                      <Bandera src={item.banderaVisitante} alt={item.equipoVisitante} />
                       <span className="text-sm text-white flex-1 truncate">
                         {item.equipoVisitante}
                       </span>
@@ -481,7 +501,7 @@ export default function PerfilPage() {
                   {item.resultadoLocal !== null && item.resultadoVisitante !== null ? (
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{item.banderaLocal}</span>
+                        <Bandera src={item.banderaLocal} alt={item.equipoLocal} />
                         <span className="text-sm text-white flex-1 truncate">
                           {item.equipoLocal}
                         </span>
@@ -490,7 +510,7 @@ export default function PerfilPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{item.banderaVisitante}</span>
+                        <Bandera src={item.banderaVisitante} alt={item.equipoVisitante} />
                         <span className="text-sm text-white flex-1 truncate">
                           {item.equipoVisitante}
                         </span>

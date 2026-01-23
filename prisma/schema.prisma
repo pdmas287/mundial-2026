@@ -33,11 +33,12 @@ enum Role {
 
 // ============ EQUIPOS ============
 model Equipo {
-  id      String @id @default(cuid())
-  nombre  String @unique
-  codigo  String @unique // Ej: "ARG", "BRA", "MEX"
-  bandera String // URL de la bandera
-  grupo   String // Ej: "A", "B", "C"...
+  id         String @id @default(cuid())
+  nombre     String @unique
+  codigo     String @unique // Ej: "ARG", "BRA", "MEX"
+  bandera    String // URL de la bandera
+  grupo      String // Ej: "A", "B", "C"...
+  rankingFIFA Int   @default(999) // Posición en ranking FIFA (menor = mejor)
 
   partidosLocal     Partido[] @relation("EquipoLocal")
   partidosVisitante Partido[] @relation("EquipoVisitante")
@@ -62,6 +63,15 @@ model Partido {
   golesVisitante   Int?
   penalesLocal     Int? // Para eliminatorias
   penalesVisitante Int?
+
+  // Tarjetas para Fair Play (ingresadas por admin al cargar resultado)
+  // Amarilla: -1, Roja por doble amarilla: -3, Roja directa: -4, Amarilla+Roja: -5
+  tarjetasAmarillasLocal     Int @default(0)
+  tarjetasRojasLocal         Int @default(0) // Rojas directas
+  tarjetasDobleAmarillaLocal Int @default(0) // Rojas por doble amarilla
+  tarjetasAmarillasVisitante     Int @default(0)
+  tarjetasRojasVisitante         Int @default(0)
+  tarjetasDobleAmarillaVisitante Int @default(0)
 
   estado EstadoPartido @default(PENDIENTE)
 
@@ -145,6 +155,10 @@ model Prediccion {
 
   golesLocal     Int
   golesVisitante Int
+
+  // Predicción de penales (solo para eliminatorias cuando predice empate)
+  penalesLocal     Int?
+  penalesVisitante Int?
 
   puntosObtenidos Int? // null = no calculado aún
 

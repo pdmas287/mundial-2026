@@ -7,22 +7,47 @@ import Card from '@/components/ui/Card'
 
 const GRUPOS = ['TODOS', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
 
+const FASES = [
+  { value: 'GRUPOS', label: 'Fase de Grupos' },
+  { value: 'DIECISEISAVOS', label: 'Dieciseisavos' },
+  { value: 'OCTAVOS', label: 'Octavos' },
+  { value: 'CUARTOS', label: 'Cuartos' },
+  { value: 'SEMIFINAL', label: 'Semifinales' },
+  { value: 'FINALES', label: 'Finales' }, // Tercer puesto + Final
+]
+
 export default function CalendarioPage() {
   const { data: session } = useSession()
   const [partidos, setPartidos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [faseSeleccionada, setFaseSeleccionada] = useState('GRUPOS')
   const [grupoSeleccionado, setGrupoSeleccionado] = useState('TODOS')
 
   useEffect(() => {
     fetchPartidos()
-  }, [grupoSeleccionado])
+  }, [faseSeleccionada, grupoSeleccionado])
 
   const fetchPartidos = async () => {
     try {
       setLoading(true)
-      const url = grupoSeleccionado === 'TODOS'
-        ? '/api/partidos'
-        : `/api/partidos?grupo=${grupoSeleccionado}`
+      let url = '/api/partidos'
+
+      if (faseSeleccionada === 'GRUPOS') {
+        url = grupoSeleccionado === 'TODOS'
+          ? '/api/partidos?fase=GRUPOS'
+          : `/api/partidos?fase=GRUPOS&grupo=${grupoSeleccionado}`
+      } else if (faseSeleccionada === 'FINALES') {
+        // Obtener tercer puesto y final
+        const [tercerPuesto, final] = await Promise.all([
+          fetch('/api/partidos?fase=TERCER_PUESTO').then(r => r.json()),
+          fetch('/api/partidos?fase=FINAL').then(r => r.json()),
+        ])
+        setPartidos([...tercerPuesto, ...final])
+        setLoading(false)
+        return
+      } else {
+        url = `/api/partidos?fase=${faseSeleccionada}`
+      }
 
       const response = await fetch(url)
       const data = await response.json()
@@ -34,7 +59,13 @@ export default function CalendarioPage() {
     }
   }
 
-  const handlePredict = async (partidoId: string, golesLocal: number, golesVisitante: number) => {
+  const handlePredict = async (
+    partidoId: string,
+    golesLocal: number,
+    golesVisitante: number,
+    penalesLocal?: number,
+    penalesVisitante?: number
+  ) => {
     try {
       const response = await fetch('/api/predicciones', {
         method: 'POST',
@@ -45,6 +76,8 @@ export default function CalendarioPage() {
           partidoId,
           golesLocal,
           golesVisitante,
+          penalesLocal,
+          penalesVisitante,
         }),
       })
 
@@ -76,27 +109,53 @@ export default function CalendarioPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Calendario de Partidos</h1>
-        <p className="text-white/60">Fase de Grupos - Mundial 2026</p>
+        <p className="text-white/60">
+          {faseSeleccionada === 'GRUPOS' ? 'Fase de Grupos' : FASES.find(f => f.value === faseSeleccionada)?.label} - Mundial 2026
+        </p>
       </div>
 
-      {/* Filtros */}
+      {/* Selector de Fase */}
       <Card>
         <div className="flex flex-wrap gap-2">
-          {GRUPOS.map((grupo) => (
+          {FASES.map((fase) => (
             <button
-              key={grupo}
-              onClick={() => setGrupoSeleccionado(grupo)}
-              className={`px-4 py-2 rounded-full font-semibold transition-all ${
-                grupoSeleccionado === grupo
-                  ? 'bg-gradient-to-r from-yellow-400 to-red-500 text-black'
-                  : 'glass text-white hover:bg-white/10'
+              key={fase.value}
+              onClick={() => {
+                setFaseSeleccionada(fase.value)
+                if (fase.value !== 'GRUPOS') setGrupoSeleccionado('TODOS')
+              }}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                faseSeleccionada === fase.value
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                  : 'glass text-white/70 hover:bg-white/10'
               }`}
             >
-              {grupo === 'TODOS' ? 'Todos los Grupos' : `Grupo ${grupo}`}
+              {fase.label}
             </button>
           ))}
         </div>
       </Card>
+
+      {/* Filtros de Grupo (solo para fase de grupos) */}
+      {faseSeleccionada === 'GRUPOS' && (
+        <Card>
+          <div className="flex flex-wrap gap-2">
+            {GRUPOS.map((grupo) => (
+              <button
+                key={grupo}
+                onClick={() => setGrupoSeleccionado(grupo)}
+                className={`px-4 py-2 rounded-full font-semibold transition-all ${
+                  grupoSeleccionado === grupo
+                    ? 'bg-gradient-to-r from-yellow-400 to-red-500 text-black'
+                    : 'glass text-white hover:bg-white/10'
+                }`}
+              >
+                {grupo === 'TODOS' ? 'Todos' : grupo}
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Estadísticas */}
       {session && (
@@ -136,9 +195,11 @@ export default function CalendarioPage() {
       ) : partidos.length === 0 ? (
         <Card className="text-center py-12">
           <span className="text-6xl mb-4 block">⚽</span>
-          <p className="text-white/60">No hay partidos en este grupo</p>
+          <p className="text-white/60">
+            {faseSeleccionada === 'GRUPOS' ? 'No hay partidos en este grupo' : 'No hay partidos en esta fase'}
+          </p>
         </Card>
-      ) : grupoSeleccionado === 'TODOS' ? (
+      ) : faseSeleccionada === 'GRUPOS' && grupoSeleccionado === 'TODOS' ? (
         // Mostrar agrupados por grupo
         <div className="space-y-8">
           {Object.entries(partidosPorGrupo)
@@ -161,15 +222,38 @@ export default function CalendarioPage() {
             ))}
         </div>
       ) : (
-        // Mostrar solo el grupo seleccionado
+        // Mostrar partidos (eliminatorias o grupo específico)
         <div className="grid gap-4">
-          {partidos.map((partido) => (
-            <PartidoCard
-              key={partido.id}
-              partido={partido}
-              onPredict={session ? handlePredict : undefined}
-            />
-          ))}
+          {partidos.map((partido) => {
+            // Si el partido no tiene equipos asignados (TBD)
+            if (!partido.equipoLocal || !partido.equipoVisitante) {
+              return (
+                <Card key={partido.id} className="opacity-50">
+                  <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-4">
+                      <span className="glass px-3 py-1 rounded text-xs bg-purple-500/20 text-purple-300">
+                        {partido.ronda || partido.fase}
+                      </span>
+                      <span className="text-white/60 text-sm">
+                        {new Date(partido.fecha).toLocaleDateString()} {new Date(partido.fecha).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <span className="text-yellow-400/70 text-sm">
+                      Equipos por definir
+                    </span>
+                  </div>
+                </Card>
+              )
+            }
+
+            return (
+              <PartidoCard
+                key={partido.id}
+                partido={partido}
+                onPredict={session ? handlePredict : undefined}
+              />
+            )
+          })}
         </div>
       )}
     </div>
