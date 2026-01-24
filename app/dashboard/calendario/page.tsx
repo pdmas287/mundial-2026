@@ -204,7 +204,7 @@ export default function CalendarioPage() {
         <div className="space-y-8">
           {Object.entries(partidosPorGrupo)
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([grupo, partidosGrupo]) => (
+            .map(([grupo, partidosGrupo]: [string, any[]]) => (
               <div key={grupo}>
                 <h2 className="text-2xl font-bold text-white mb-4">
                   Grupo {grupo}
