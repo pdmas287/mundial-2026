@@ -61,19 +61,12 @@ su - mundial2026
 
 ---
 
-## 5. Clonar/Subir el proyecto
+## 5. Clonar el proyecto desde GitHub
 
-### Opción A: Git (recomendado)
 ```bash
 cd /home/mundial2026
-git clone <tu-repositorio> mundial2026-app
+git clone https://github.com/pdmas287/mundial-2026.git mundial2026-app
 cd mundial2026-app
-```
-
-### Opción B: SCP desde tu máquina local
-Desde tu máquina Windows (PowerShell):
-```powershell
-scp -r "d:\Users\pdmas\OneDrive\Escritorio\Python\mundial_2026\*" mundial2026@195.200.6.223:/home/mundial2026/mundial2026-app/
 ```
 
 ---
