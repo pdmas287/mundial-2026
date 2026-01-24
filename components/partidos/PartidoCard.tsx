@@ -70,7 +70,10 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
   const [showSuccess, setShowSuccess] = useState(false)
 
   const fechaPartido = typeof partido.fecha === 'string' ? new Date(partido.fecha) : partido.fecha
-  const haComenzado = new Date() >= fechaPartido
+  const ahora = new Date()
+  const cierrePredicciones = new Date(fechaPartido.getTime() - 60 * 60 * 1000) // 1 hora antes
+  const prediccionesCerradas = ahora >= cierrePredicciones
+  const haComenzado = ahora >= fechaPartido
   const haTerminado = partido.golesLocal !== null && partido.golesVisitante !== null
   const tienPrediccion = partido.predicciones && partido.predicciones.length > 0
 
@@ -138,7 +141,7 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
             )}
           </div>
 
-          {!haComenzado && onPredict ? (
+          {!prediccionesCerradas && onPredict ? (
             <input
               type="number"
               min="0"
@@ -161,7 +164,7 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
           <p className="font-orbitron text-2xl font-bold text-white mb-1">{formatTime(fechaPartido)}</p>
           <p className="text-xs text-white/40 mb-3">📍 {partido.sede}</p>
 
-          {!haComenzado && onPredict ? (
+          {!prediccionesCerradas && onPredict ? (
             <Button
               onClick={handleSubmit}
               variant="primary"
@@ -178,6 +181,10 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
           ) : haComenzado ? (
             <div className="glass px-3 py-1 rounded-full inline-block">
               <span className="text-xs font-bold text-yellow-400">EN CURSO</span>
+            </div>
+          ) : prediccionesCerradas ? (
+            <div className="glass px-3 py-1 rounded-full inline-block">
+              <span className="text-xs font-bold text-orange-400">CERRADO</span>
             </div>
           ) : tienPrediccion ? (
             <div className="glass px-3 py-1 rounded-full inline-block">
@@ -206,7 +213,7 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
             </div>
           </div>
 
-          {!haComenzado && onPredict ? (
+          {!prediccionesCerradas && onPredict ? (
             <input
               type="number"
               min="0"
@@ -234,7 +241,7 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
       )}
 
       {/* Sección de Penales (solo para eliminatorias cuando predice empate) */}
-      {!haComenzado && onPredict && necesitaPenales && (
+      {!prediccionesCerradas && onPredict && necesitaPenales && (
         <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
           <p className="text-xs text-blue-300 text-center mb-3">
             ⚽ Predices empate - ¿Quién gana en penales?
@@ -279,6 +286,15 @@ export default function PartidoCard({ partido, onPredict }: PartidoCardProps) {
         <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
           <p className="text-xs text-blue-300 text-center">
             Penales: {partido.equipoLocal.codigo} {partido.penalesLocal} - {partido.penalesVisitante} {partido.equipoVisitante.codigo}
+          </p>
+        </div>
+      )}
+
+      {/* Warning si predicciones cerradas pero partido no ha comenzado */}
+      {prediccionesCerradas && !haComenzado && !haTerminado && (
+        <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+          <p className="text-xs text-orange-400 text-center">
+            Las predicciones se cerraron 1 hora antes del partido. Ya no se pueden hacer cambios.
           </p>
         </div>
       )}

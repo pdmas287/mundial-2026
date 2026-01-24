@@ -38,10 +38,20 @@ export async function POST(request: Request) {
       )
     }
 
-    // Verificar que el partido no ha comenzado
-    if (new Date() >= partido.fecha) {
+    // Verificar que las predicciones no están cerradas (1 hora antes del partido)
+    const ahora = new Date()
+    const cierrePredicciones = new Date(partido.fecha.getTime() - 60 * 60 * 1000) // 1 hora antes
+
+    if (ahora >= partido.fecha) {
       return NextResponse.json(
         { error: 'No se puede predecir un partido que ya comenzó' },
+        { status: 400 }
+      )
+    }
+
+    if (ahora >= cierrePredicciones) {
+      return NextResponse.json(
+        { error: 'Las predicciones para este partido se cerraron 1 hora antes del inicio' },
         { status: 400 }
       )
     }
