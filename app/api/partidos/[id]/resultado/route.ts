@@ -140,7 +140,7 @@ export async function POST(
     }
 
     // Recalcular puntos totales de cada usuario afectado
-    for (const userId of usuariosActualizados) {
+    for (const userId of Array.from(usuariosActualizados)) {
       const todasLasPredicciones = await prisma.prediccion.findMany({
         where: {
           userId,
