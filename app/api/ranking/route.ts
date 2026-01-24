@@ -100,10 +100,16 @@ export async function GET(request: Request) {
     let posicionUsuario = null
 
     if (!usuarioActual) {
+      // Obtener los puntos del usuario actual desde la base de datos
+      const usuarioActualDB = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { puntosTotal: true },
+      })
+
       const posicion = await prisma.user.count({
         where: {
           puntosTotal: {
-            gt: session.user.puntosTotal || 0,
+            gt: usuarioActualDB?.puntosTotal || 0,
           },
         },
       })
