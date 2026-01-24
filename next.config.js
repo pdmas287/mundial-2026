@@ -15,6 +15,11 @@ const nextConfig = {
     }
     return config
   },
+  // Optimizaciones para producción
+  poweredByHeader: false, // Ocultar header X-Powered-By
+  compress: true, // Habilitar compresión gzip
+  // Output standalone para mejor rendimiento en producción
+  output: 'standalone',
 }
 
 module.exports = nextConfig
