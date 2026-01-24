@@ -140,7 +140,6 @@ export async function GET() {
     const historialReciente = predicciones.slice(0, 20).map((p) => ({
       id: p.id,
       fecha: p.partido.fecha,
-      hora: p.partido.hora,
       fase: p.partido.fase,
       equipoLocal: p.partido.equipoLocal?.nombre || 'TBD',
       banderaLocal: p.partido.equipoLocal?.bandera || '❓',
