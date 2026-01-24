@@ -44,10 +44,14 @@ export async function POST(request: Request) {
           {
             golesLocal: prediccion.golesLocal,
             golesVisitante: prediccion.golesVisitante,
+            penalesLocal: prediccion.penalesLocal,
+            penalesVisitante: prediccion.penalesVisitante,
           },
           {
             golesLocal: partido.golesLocal!,
             golesVisitante: partido.golesVisitante!,
+            penalesLocal: partido.penalesLocal,
+            penalesVisitante: partido.penalesVisitante,
           },
           partido.fase
         )
@@ -63,7 +67,7 @@ export async function POST(request: Request) {
     }
 
     // Recalcular puntos totales de todos los usuarios afectados
-    for (const userId of usuariosAfectados) {
+    for (const userId of Array.from(usuariosAfectados)) {
       const todasLasPredicciones = await prisma.prediccion.findMany({
         where: {
           userId,
