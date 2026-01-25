@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Ronda } from '@prisma/client'
 import {
   calcularTablaGrupo,
   obtenerClasificadosGrupo,
@@ -103,7 +103,7 @@ async function asignarClasificados() {
 
     for (const partido of todosLosPartidos) {
       const updated = await prisma.partido.updateMany({
-        where: { ronda: partido.ronda },
+        where: { ronda: partido.ronda as Ronda },
         data: {
           equipoLocalId: partido.local,
           equipoVisitanteId: partido.visitante,

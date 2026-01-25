@@ -20,7 +20,7 @@ async function getUser(email: string) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as any,
   session: { strategy: 'jwt' },
   providers: [
     Credentials({
@@ -66,7 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string
-        session.user.name = token.name
+        session.user.name = token.name as string
         session.user.email = token.email as string
         session.user.image = token.picture as string | null
         session.user.role = token.role as 'USER' | 'ADMIN'

@@ -1,4 +1,4 @@
-import { PrismaClient, Fase } from '@prisma/client'
+import { PrismaClient, Fase, Ronda } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -49,7 +49,7 @@ const SEMIFINALES_A_TERCER_PUESTO: Record<string, [string, string]> = {
  */
 async function obtenerGanador(ronda: string): Promise<string | null> {
   const partido = await prisma.partido.findFirst({
-    where: { ronda },
+    where: { ronda: ronda as Ronda },
     include: {
       equipoLocal: true,
       equipoVisitante: true,
@@ -100,7 +100,7 @@ async function obtenerGanador(ronda: string): Promise<string | null> {
  */
 async function obtenerPerdedor(ronda: string): Promise<string | null> {
   const partido = await prisma.partido.findFirst({
-    where: { ronda },
+    where: { ronda: ronda as Ronda },
     include: {
       equipoLocal: true,
       equipoVisitante: true,
@@ -194,7 +194,7 @@ async function avanzarRonda(
 
     // Actualizar partido destino
     const updated = await prisma.partido.updateMany({
-      where: { ronda: rondaDestino },
+      where: { ronda: rondaDestino as Ronda },
       data: {
         equipoLocalId: equipo1,
         equipoVisitanteId: equipo2,

@@ -202,9 +202,9 @@ export default function CalendarioPage() {
       ) : faseSeleccionada === 'GRUPOS' && grupoSeleccionado === 'TODOS' ? (
         // Mostrar agrupados por grupo
         <div className="space-y-8">
-          {Object.entries(partidosPorGrupo)
+          {(Object.entries(partidosPorGrupo) as [string, any[]][])
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([grupo, partidosGrupo]: [string, any[]]) => (
+            .map(([grupo, partidosGrupo]) => (
               <div key={grupo}>
                 <h2 className="text-2xl font-bold text-white mb-4">
                   Grupo {grupo}

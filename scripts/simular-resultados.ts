@@ -33,6 +33,12 @@ async function main() {
   const usuariosActualizados = new Set<string>()
 
   for (const partido of partidos) {
+    // Saltar partidos sin equipos asignados
+    if (!partido.equipoLocal || !partido.equipoVisitante) {
+      console.log(`⏭️  Partido ${partido.id} sin equipos asignados, saltando...`)
+      continue
+    }
+
     // Generar resultado aleatorio
     const golesLocal = Math.floor(Math.random() * 5)
     const golesVisitante = Math.floor(Math.random() * 5)
@@ -84,7 +90,7 @@ async function main() {
   // Recalcular puntos totales de usuarios
   console.log('🔄 Recalculando puntos totales...\n')
 
-  for (const userId of usuariosActualizados) {
+  for (const userId of Array.from(usuariosActualizados)) {
     const todasLasPredicciones = await prisma.prediccion.findMany({
       where: {
         userId,

@@ -71,7 +71,6 @@ interface PrediccionPremio {
 interface HistorialItem {
   id: string
   fecha: string
-  hora: string
   fase: string
   equipoLocal: string
   banderaLocal: string
