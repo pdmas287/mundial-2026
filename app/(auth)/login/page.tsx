@@ -112,14 +112,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="mt-6 p-4 glass rounded-lg">
-          <p className="text-xs text-white/50 text-center mb-2">Credenciales de prueba:</p>
-          <p className="text-sm text-white/70 text-center">
-            <span className="font-mono">demo@mundial2026.com</span>
-            <br />
-            <span className="font-mono">password123</span>
-          </p>
-        </div>
       </Card>
     </main>
   )
