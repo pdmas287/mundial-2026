@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -34,6 +35,12 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <link rel="canonical" href="https://mundial2026.fun" />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1445179381452360"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="antialiased">
         <Providers>{children}</Providers>
