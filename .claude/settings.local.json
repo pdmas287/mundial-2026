@@ -35,7 +35,11 @@
       "Bash(echo:*)",
       "Bash(npm run db:seed:*)",
       "Bash(npm run build:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(npx ctx7@latest library prisma)",
+      "Bash(npx ctx7@latest docs /websites/prisma_io \"migration v5 to v6 v7 breaking changes upgrade\")",
+      "Bash(npx ctx7@latest docs //websites/prisma_io \"migration v5 to v6 v7 breaking changes upgrade\")",
+      "mcp__claude_ai_Context7__query-docs"
     ]
   }
 }
