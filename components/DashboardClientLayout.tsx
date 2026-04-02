@@ -69,7 +69,7 @@ export default function DashboardClientLayout({
                 type="button"
                 variant="secondary"
                 size="sm"
-                onClick={() => signOut()}
+                onClick={() => signOut({ callbackUrl: '/' })}
               >
                 Salir
               </Button>
