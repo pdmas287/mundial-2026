@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 
+// Esta ruta usa la sesión (headers), por lo que siempre se renderiza dinámicamente
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const session = await auth()
