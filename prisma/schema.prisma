@@ -251,3 +251,14 @@ enum TipoNotificacion {
   RESULTADO_PARTIDO // Resultado de partido publicado
   PREMIO_ACERTADO // Premio individual acertado
 }
+
+// ============ RECUPERACION DE CONTRASEÑA ============
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique // hash SHA-256 del token (no el token en claro)
+  expires   DateTime // createdAt + 1 hora
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
