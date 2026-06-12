@@ -310,6 +310,76 @@ export default function PremiosPage() {
                             </button>
                           ))}
                       </div>
+
+                      {/* Agregar jugador personalizado */}
+                      {agregandoPara === premio.id ? (
+                        <div className="glass p-4 rounded-lg space-y-3 border border-white/10">
+                          <p className="text-sm font-semibold text-white/80">
+                            Agregar jugador nuevo
+                          </p>
+                          <input
+                            type="text"
+                            value={nuevoNombre}
+                            onChange={(e) => setNuevoNombre(e.target.value)}
+                            placeholder="Nombre del jugador"
+                            className="w-full glass p-2 rounded-lg bg-white/5 text-white placeholder-white/40 border border-white/10 focus:border-yellow-400 outline-none"
+                          />
+                          <select
+                            value={nuevoEquipoId}
+                            onChange={(e) => setNuevoEquipoId(e.target.value)}
+                            className="w-full glass p-2 rounded-lg bg-white/5 text-white border border-white/10 focus:border-yellow-400 outline-none"
+                          >
+                            <option value="" className="bg-gray-800">
+                              Selecciona un equipo
+                            </option>
+                            {data?.equipos.map((equipo) => (
+                              <option key={equipo.id} value={equipo.id} className="bg-gray-800">
+                                {equipo.nombre}
+                              </option>
+                            ))}
+                          </select>
+                          {premio.tipo !== 'GUANTE_ORO' && (
+                            <select
+                              value={nuevaPosicion}
+                              onChange={(e) => setNuevaPosicion(e.target.value)}
+                              className="w-full glass p-2 rounded-lg bg-white/5 text-white border border-white/10 focus:border-yellow-400 outline-none"
+                            >
+                              <option value="Portero" className="bg-gray-800">Portero</option>
+                              <option value="Defensa" className="bg-gray-800">Defensa</option>
+                              <option value="Mediocampista" className="bg-gray-800">Mediocampista</option>
+                              <option value="Delantero" className="bg-gray-800">Delantero</option>
+                            </select>
+                          )}
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => handleCrearJugador(premio.id, premio.tipo)}
+                              disabled={creando}
+                            >
+                              {creando ? 'Guardando...' : 'Guardar'}
+                            </Button>
+                            <Button
+                              variant="secondary"
+                              onClick={resetFormulario}
+                              disabled={creando}
+                            >
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            resetFormulario()
+                            setAgregandoPara(premio.id)
+                            setNuevaPosicion(
+                              premio.tipo === 'BOTA_ORO' ? 'Delantero' : 'Mediocampista'
+                            )
+                          }}
+                          className="glass p-3 rounded-lg text-left hover:bg-white/20 transition-all border border-dashed border-white/20 text-white/70 w-full"
+                        >
+                          + Agregar jugador que no está en la lista
+                        </button>
+                      )}
                     </div>
                   )}
 
