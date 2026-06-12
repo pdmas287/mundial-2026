@@ -13,9 +13,18 @@ function getTransporter() {
 }
 
 export async function enviarEmailRecuperacion(email: string, enlace: string) {
-  // En desarrollo o sin credenciales: imprimir el enlace en consola y no enviar.
   const sinCredenciales = !process.env.SMTP_HOST || !process.env.SMTP_USER
-  if (process.env.NODE_ENV !== 'production' || sinCredenciales) {
+  const enProduccion = process.env.NODE_ENV === 'production'
+
+  // En producción sin credenciales: no exponer el enlace en logs (es sensible),
+  // solo avisar del error de configuración.
+  if (enProduccion && sinCredenciales) {
+    console.error('SMTP no configurado: no se pudo enviar el email de recuperación.')
+    return
+  }
+
+  // En desarrollo: imprimir el enlace en consola para poder probar sin SMTP.
+  if (!enProduccion) {
     console.log('========================================')
     console.log('ENLACE DE RECUPERACION (modo desarrollo):')
     console.log(enlace)

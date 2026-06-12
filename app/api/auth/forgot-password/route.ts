@@ -6,7 +6,7 @@ import { enviarEmailRecuperacion } from '@/lib/mail'
 
 export const dynamic = 'force-dynamic'
 
-const schema = z.object({ email: z.string().email() })
+const schema = z.object({ email: z.string().email().transform((e) => e.trim()) })
 
 // Respuesta genérica: nunca revela si el email existe
 const RESPUESTA_GENERICA = {

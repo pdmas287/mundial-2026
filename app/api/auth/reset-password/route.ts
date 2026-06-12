@@ -46,13 +46,16 @@ export async function POST(request: Request) {
       )
     }
 
-    // Actualizar contraseña y consumir el token
+    // Actualizar contraseña y consumir el token de forma atómica:
+    // si falla el update (ej. usuario borrado), el token igual se consume.
     const hashedPassword = await bcrypt.hash(password, 10)
-    await prisma.user.update({
-      where: { email: registro.email },
-      data: { password: hashedPassword },
-    })
-    await prisma.passwordResetToken.delete({ where: { id: registro.id } })
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { email: registro.email },
+        data: { password: hashedPassword },
+      }),
+      prisma.passwordResetToken.delete({ where: { id: registro.id } }),
+    ])
 
     return NextResponse.json(
       { message: 'Contraseña actualizada correctamente.' },
