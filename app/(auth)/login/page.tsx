@@ -103,6 +103,12 @@ export default function LoginPage() {
           </Button>
         </form>
 
+        <div className="mt-4 text-center">
+          <Link href="/recuperar-password" className="text-white/60 hover:text-white text-sm">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
+
         <div className="mt-6 text-center">
           <p className="text-white/70 text-sm">
             ¿No tienes cuenta?{' '}
