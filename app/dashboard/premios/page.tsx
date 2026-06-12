@@ -68,6 +68,13 @@ export default function PremiosPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState<string | null>(null)
 
+  // Formulario para agregar un jugador personalizado (por premio)
+  const [agregandoPara, setAgregandoPara] = useState<string | null>(null)
+  const [nuevoNombre, setNuevoNombre] = useState('')
+  const [nuevoEquipoId, setNuevoEquipoId] = useState('')
+  const [nuevaPosicion, setNuevaPosicion] = useState('Delantero')
+  const [creando, setCreando] = useState(false)
+
   useEffect(() => {
     fetchPremios()
   }, [])
@@ -113,6 +120,54 @@ export default function PremiosPage() {
       alert(error.message || 'Error al guardar predicción')
     } finally {
       setSaving(null)
+    }
+  }
+
+  const resetFormulario = () => {
+    setAgregandoPara(null)
+    setNuevoNombre('')
+    setNuevoEquipoId('')
+    setNuevaPosicion('Delantero')
+  }
+
+  const handleCrearJugador = async (premioId: string, tipo: string) => {
+    if (!nuevoNombre.trim()) {
+      alert('Ingresa el nombre del jugador')
+      return
+    }
+    if (!nuevoEquipoId) {
+      alert('Selecciona un equipo')
+      return
+    }
+
+    // Guante de Oro fuerza Portero; el resto usa la posición elegida
+    const posicion = tipo === 'GUANTE_ORO' ? 'Portero' : nuevaPosicion
+
+    try {
+      setCreando(true)
+      const response = await fetch('/api/premios/jugador', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: nuevoNombre.trim(),
+          equipoId: nuevoEquipoId,
+          posicion,
+        }),
+      })
+
+      const jugador = await response.json()
+      if (!response.ok) {
+        throw new Error(jugador.error || 'Error al crear jugador')
+      }
+
+      resetFormulario()
+      // Auto-seleccionar el jugador recién creado como predicción de este premio
+      await handleSavePrediccion(premioId, jugador.id)
+    } catch (error: any) {
+      console.error('Error:', error)
+      alert(error.message || 'Error al crear jugador')
+    } finally {
+      setCreando(false)
     }
   }
 
