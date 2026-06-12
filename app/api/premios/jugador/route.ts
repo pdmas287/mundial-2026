@@ -14,11 +14,19 @@ export async function POST(request: Request) {
 
     const body = await request.json()
     const nombre = typeof body.nombre === 'string' ? body.nombre.trim() : ''
-    const equipoId = body.equipoId
+    const equipoId = typeof body.equipoId === 'string' ? body.equipoId : ''
     const posicion = body.posicion
 
     if (!nombre) {
       return NextResponse.json({ error: 'El nombre es requerido' }, { status: 400 })
+    }
+
+    if (nombre.length > 100) {
+      return NextResponse.json({ error: 'El nombre es demasiado largo' }, { status: 400 })
+    }
+
+    if (!equipoId) {
+      return NextResponse.json({ error: 'El equipo es requerido' }, { status: 400 })
     }
 
     if (!POSICIONES_VALIDAS.includes(posicion)) {
