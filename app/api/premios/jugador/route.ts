@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     }
 
     const jugador = await prisma.jugador.create({
-      data: { nombre, posicion, equipoId },
+      data: { nombre, posicion, equipoId, esPersonalizado: true },
     })
 
     return NextResponse.json(jugador, { status: 201 })
