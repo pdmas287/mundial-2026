@@ -225,10 +225,9 @@ export default function PremiosPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
                         {data?.jugadores
                           .filter((j) => {
-                            // Filtrar por posición según el premio
+                            // Solo el Guante de Oro restringe a porteros
                             if (premio.tipo === 'GUANTE_ORO') return j.posicion === 'Portero'
-                            if (premio.tipo === 'BOTA_ORO') return j.posicion === 'Delantero'
-                            return true // BALON_ORO: todos
+                            return true // BALON_ORO y BOTA_ORO: todos
                           })
                           .map((jugador) => (
                             <button
