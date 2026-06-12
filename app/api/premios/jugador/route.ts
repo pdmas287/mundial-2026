@@ -38,11 +38,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Equipo no encontrado' }, { status: 400 })
     }
 
-    // Idempotencia: si ya existe un jugador con mismo nombre (case-insensitive)
-    // y mismo equipo, devolverlo en lugar de duplicar.
+    // Idempotencia: si ya existe un jugador con mismo nombre (case-insensitive),
+    // mismo equipo y misma posición, devolverlo en lugar de duplicar.
+    // La posición es parte de la clave para no devolver, por ejemplo, un
+    // Delantero existente cuando se pide crear un Portero para el Guante de Oro.
     const existente = await prisma.jugador.findFirst({
       where: {
         equipoId,
+        posicion,
         nombre: { equals: nombre, mode: 'insensitive' },
       },
     })

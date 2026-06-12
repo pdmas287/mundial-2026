@@ -160,9 +160,11 @@ export default function PremiosPage() {
         throw new Error(jugador.error || 'Error al crear jugador')
       }
 
-      resetFormulario()
-      // Auto-seleccionar el jugador recién creado como predicción de este premio
+      // Auto-seleccionar el jugador recién creado como predicción de este premio.
+      // Se guarda antes de cerrar el formulario; si el guardado falla, el jugador
+      // ya aparece en la lista y el usuario puede seleccionarlo manualmente.
       await handleSavePrediccion(premioId, jugador.id)
+      resetFormulario()
     } catch (error: any) {
       console.error('Error:', error)
       alert(error.message || 'Error al crear jugador')
