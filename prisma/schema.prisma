@@ -194,6 +194,9 @@ model Jugador {
   equipoId String
   foto     String?
 
+  esPersonalizado Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
   predicciones PrediccionPremio[]
 }
 
@@ -250,6 +253,7 @@ enum TipoNotificacion {
   PUNTOS_GANADOS // Puntos obtenidos por predicción
   RESULTADO_PARTIDO // Resultado de partido publicado
   PREMIO_ACERTADO // Premio individual acertado
+  JUGADOR_ELIMINADO // Un jugador que el usuario había elegido fue eliminado
 }
 
 // ============ RECUPERACION DE CONTRASEÑA ============
