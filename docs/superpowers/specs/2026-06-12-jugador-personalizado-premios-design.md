@@ -16,15 +16,22 @@ como la predicción del usuario para ese premio.
 - Aplica a los tres premios de jugador: `BALON_ORO`, `BOTA_ORO`, `GUANTE_ORO`.
 - Cualquier usuario autenticado puede agregar un jugador (no se requiere rol admin).
 
-## Decisión de diseño: sin filtro por posición
+## Decisión de diseño: filtro por posición solo para Guante de Oro
 
 Actualmente la lista de elegibles en el frontend filtra por posición:
 - `BOTA_ORO` → solo `Delantero`
 - `GUANTE_ORO` → solo `Portero`
 
-**Este filtro se elimina.** Los tres premios mostrarán todos los jugadores del
-catálogo. La posición se sigue guardando como dato del jugador, pero ya no
-condiciona qué jugadores aparecen como elegibles.
+**Se elimina el filtro de `BOTA_ORO`** (mostrará todos los jugadores, igual que
+`BALON_ORO`). **Se mantiene el filtro de `GUANTE_ORO`** → solo `Portero`.
+
+Resumen del comportamiento de elegibles:
+- `BALON_ORO` → todos los jugadores.
+- `BOTA_ORO` → todos los jugadores.
+- `GUANTE_ORO` → solo jugadores con `posicion === 'Portero'`.
+
+Como un jugador creado desde el formulario de Guante de Oro siempre se guarda con
+posición `Portero`, aparecerá correctamente en su lista tras crearlo.
 
 ## Componentes
 
@@ -45,8 +52,8 @@ Nuevo endpoint (archivo `app/api/premios/jugador/route.ts`).
 
 ### 2. Frontend — `app/dashboard/premios/page.tsx`
 
-- **Eliminar** el `.filter()` por posición en la lista de elegibles. Los tres
-  premios de jugador iteran sobre `data.jugadores` completo.
+- **Ajustar** el `.filter()` por posición: `BALON_ORO` y `BOTA_ORO` iteran sobre
+  `data.jugadores` completo; `GUANTE_ORO` mantiene `j.posicion === 'Portero'`.
 - Debajo de la lista de jugadores de cada premio de jugador, agregar un botón
   **"+ Agregar jugador"** que despliega un formulario inline con:
   - **Nombre:** input de texto.
@@ -95,4 +102,5 @@ Verificación manual end-to-end con Playwright usando las credenciales de prueba
    que aparece y queda seleccionado.
 4. En Guante de Oro: confirmar que el formulario NO pide posición y el jugador se
    crea como Portero.
-5. Confirmar que todos los jugadores aparecen en los tres premios (sin filtro).
+5. Confirmar que todos los jugadores aparecen en Balón y Bota de Oro, y que
+   Guante de Oro solo muestra porteros.
