@@ -1,0 +1,19 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: ⚽
+      - heading "MUNDIAL 2026" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Crea tu nueva contraseña
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: Nueva contraseña
+        - textbox "Nueva contraseña" [ref=e11]:
+          - /placeholder: ••••••••
+        - paragraph [ref=e12]: Mínimo 6 caracteres
+      - generic [ref=e13]:
+        - generic [ref=e14]: Confirmar contraseña
+        - textbox "Confirmar contraseña" [ref=e15]:
+          - /placeholder: ••••••••
+      - button "Cambiar contraseña" [ref=e16] [cursor=pointer]
+    - link "Volver a iniciar sesión" [ref=e18] [cursor=pointer]:
+      - /url: /login
