@@ -102,6 +102,68 @@ Ya no tendrás que hacer nada manualmente tras un reinicio.
 
 ---
 
+## ✉️ Configuración de "Restablecer contraseña" (una sola vez)
+
+La función de recuperación de contraseña envía un correo con un enlace seguro.
+Para que funcione en producción, hay que configurar el SMTP de Hostinger **una vez**.
+
+> ℹ️ La tabla de base de datos (`PasswordResetToken`) **ya fue creada** desde el
+> entorno de desarrollo. No necesitas correr ninguna migración para esto.
+
+### Paso 1 — Obtener las credenciales SMTP en Hostinger
+
+En el panel de Hostinger (hPanel): **Correos → tu cuenta de correo → Configuración /
+Detalles de configuración**. Anota: servidor SMTP, puerto, usuario (la dirección de
+correo completa) y su contraseña.
+
+### Paso 2 — Añadir las variables al `.env` del VPS
+
+Edita el archivo `.env` del proyecto en el VPS:
+
+```bash
+nano /home/mundial2026/mundial2026-app/.env
+```
+
+Añade al final (reemplaza con tus datos reales de Hostinger):
+
+```
+SMTP_HOST=smtp.hostinger.com
+SMTP_PORT=465
+SMTP_USER=info@tudominio.com
+SMTP_PASS=tu_password_de_correo
+SMTP_FROM="Mundial 2026 <info@tudominio.com>"
+```
+
+Guarda con `Ctrl + O`, Enter, y sal con `Ctrl + X`.
+
+### Paso 3 — Confirmar la URL pública
+
+En el mismo `.env`, asegúrate de que `NEXTAUTH_URL` apunte a tu dominio real con
+**https** (no a localhost). El enlace del correo se construye con esta variable:
+
+```
+NEXTAUTH_URL=https://tudominio.com
+```
+
+### Paso 4 — Reconstruir y reiniciar
+
+```bash
+bash /home/mundial2026/deploy.sh
+```
+
+> 💡 **Mientras no configures el SMTP:** la función no fallará, pero en vez de enviar
+> el correo, el enlace de recuperación se imprimirá en los logs del servidor
+> (`pm2 logs mundial2026`). Útil para probar antes de tener el correo listo.
+
+### Cómo probar que funciona
+
+1. Ve a tu dominio `/login` → clic en "¿Olvidaste tu contraseña?".
+2. Ingresa el email de **tu propia cuenta** → "Enviar enlace".
+3. Revisa tu correo (y la carpeta de spam). Abre el enlace.
+4. Crea una nueva contraseña → deberías poder iniciar sesión con ella.
+
+---
+
 ## 🔵 VÍA A — Actualizar código (después de subir cambios a GitHub)
 
 Úsala cuando hiciste `git push` con cambios nuevos y quieres verlos en producción.
