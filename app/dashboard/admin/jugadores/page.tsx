@@ -73,7 +73,7 @@ export default function AdminJugadoresPage() {
     }
   }
 
-  const equipoNombre = (equipoId: string) =>
+  const getEquipo = (equipoId: string) =>
     equipos.find((e) => e.id === equipoId)
 
   const iniciarEdicion = (j: Jugador) => {
@@ -182,8 +182,15 @@ export default function AdminJugadoresPage() {
       ) : (
         <div className="space-y-3">
           <p className="text-white/40 text-sm">{visibles.length} jugador(es)</p>
+          {visibles.length === 0 && (
+            <p className="text-white/40 text-sm text-center py-8">
+              {soloPersonalizados
+                ? 'No hay jugadores creados por usuarios.'
+                : 'No hay jugadores.'}
+            </p>
+          )}
           {visibles.map((j) => {
-            const equipo = equipoNombre(j.equipoId)
+            const equipo = getEquipo(j.equipoId)
             const enEdicion = editandoId === j.id
             return (
               <Card key={j.id} className={j.esPersonalizado ? 'border-purple-500/30' : ''}>
