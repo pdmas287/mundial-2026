@@ -22,6 +22,7 @@ export default async function DashboardLayout({
     { href: '/dashboard/premios', label: '🥇 Premios', icon: '🥇', adminOnly: false },
     { href: '/dashboard/perfil', label: '👤 Perfil', icon: '👤', adminOnly: false },
     { href: '/dashboard/admin', label: '⚙️ Admin', icon: '⚙️', adminOnly: true },
+    { href: '/dashboard/admin/jugadores', label: '🧑 Jugadores', icon: '🧑', adminOnly: true },
   ]
 
   return (
